@@ -90,6 +90,7 @@ class OrderList extends Component
                     (
                         select
                             master_plan.id_ws,
+                            master_plan.sewing_line,
                             count(output_rfts_finish.id) as progress
                         from
                             master_plan
@@ -100,16 +101,21 @@ class OrderList extends Component
                             master_plan.tgl_plan = '".$this->date."' AND
                             master_plan.cancel = 'N'
                         group by
-                            master_plan.id_ws
+                            master_plan.id_ws,
+                            master_plan.sewing_line
                     ) output"
                 ),
-                "output.id_ws", "=", "master_plan.id_ws"
+                function ($join) {
+                    $join->on("output.id_ws", "=", "master_plan.id_ws");
+                    $join->on("output.sewing_line", "=", "master_plan.sewing_line");
+                }
             )
             ->leftJoin(
                 DB::raw("
                     (
                         select
                             master_plan.id_ws,
+                            master_plan.sewing_line,
                             count(output_rfts.id) as progress
                         from
                             master_plan
@@ -120,10 +126,14 @@ class OrderList extends Component
                             master_plan.tgl_plan = '".$this->date."' AND
                             master_plan.cancel = 'N'
                         group by
-                            master_plan.id_ws
+                            master_plan.id_ws,
+                            master_plan.sewing_line
                     ) output_endline"
                 ),
-                "output_endline.id_ws", "=", "master_plan.id_ws"
+                function ($join) {
+                    $join->on("output_endline.id_ws", "=", "master_plan.id_ws");
+                    $join->on("output_endline.sewing_line", "=", "master_plan.sewing_line");
+                }
             );
         if (Auth::user()->Groupp != 'ALLSEWING') {
             $orderSql->where('master_plan.sewing_line', strtoupper(Auth::user()->username));
