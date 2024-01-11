@@ -146,7 +146,7 @@
                             <label class="form-label">Style</label>
                             <div wire:ignore id="select-style-container">
                                 <select class="form-select @error('filterStyle') is-invalid @enderror" id="style-select2" wire:model='filterStyle'>
-                                    <option value="" selected>Select Option</option>
+                                    <option value="" selected>Select Style</option>
                                     @foreach ($orders->groupBy('style_name') as $order)
                                         <option value="{{ $order->first()->style_name }}">
                                             {{ strtoupper($order->first()->style_name) }}
