@@ -170,6 +170,11 @@ class OrderList extends Component
                 'output_endline.progress',
                 'so.id'
             )
+            ->orderBy('master_plan.sewing_line', 'asc')
+            ->orderBy('mastersupplier.supplier', 'asc')
+            ->orderBy('act_costing.kpno', 'asc')
+            ->orderBy('product_type', 'asc')
+            ->orderBy('act_costing.styleno', 'asc')
             ->get();
 
         return view('livewire.order-list');
