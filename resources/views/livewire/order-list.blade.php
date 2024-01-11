@@ -5,7 +5,7 @@
             <input type="text" class="form-control" wire:model='search' placeholder="Search Order...">
             <button class="btn btn-sb-secondary" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
         </div>
-        <button class="btn btn-sb mb-3" type="button" wire:click="preSubmitFilter"><i class="fa-regular fa-filter"></i></button>
+        <button class="btn btn-sb btn-sb-secondary-outline mb-3" type="button" wire:click="preSubmitFilter"><i class="fa-regular fa-filter"></i></button>
     </div>
 
     <div class="w-100" wire:loading wire:target='search, date, filterLine, filterBuyer, filterWs, filterProductType, filterStyle'>

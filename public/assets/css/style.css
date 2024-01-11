@@ -203,6 +203,18 @@ input[type=number] {
     color: var(--sb-secondary-color);
 }
 
+.btn-sb-secondary-outline {
+    border-color: var(--sb-secondary-color);
+    background-color: var(--light-color);
+    color: var(--sb-secondary-color);
+}
+
+.btn-sb-secondary-outline:hover {
+    border-color: var(--sb-secondary-color);
+    background-color: var(--sb-secondary-color);
+    color: var(--light-color);
+}
+
 .btn-rft {
     border-color: var(--rft-color-sec) !important;
     background: var(--light-color) !important;
