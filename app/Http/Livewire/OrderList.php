@@ -176,6 +176,7 @@ class OrderList extends Component
             ->orderBy('product_type', 'asc')
             ->orderBy('act_costing.styleno', 'asc')
             ->orderBy('output.progress', 'desc')
+            ->orderBy('output_endline.progress', 'desc')
             ->get();
 
         return view('livewire.order-list');
