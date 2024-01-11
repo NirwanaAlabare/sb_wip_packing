@@ -412,7 +412,7 @@ class ProductionPanel extends Component
             if (Auth::user()->Groupp != "ALLSEWING") {
                 $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
             }
-        $this->$orderWsDetailSizes = $orderWsDetailSizesSql->where('act_costing.kpno', $this->orderInfo->ws_number)
+        $this->orderWsDetailSizes = $orderWsDetailSizesSql->where('act_costing.kpno', $this->orderInfo->ws_number)
             ->where('so_det.color', $this->selectedColorName)
             ->groupBy('so_det.size')
             ->orderBy('so_det_id')
