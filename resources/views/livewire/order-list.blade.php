@@ -60,7 +60,7 @@
                             <div class="mx-2">
                                 <div class="d-flex justify-content-between w-100">
                                     <p class="mb-1">Output : <b>{{ $order->progress }}</b></p>
-                                    <p class="mb-1">Target : <b>{{ $order->target }}</b></p>
+                                    <p class="mb-1">Endline : <b>{{ $order->target }}</b></p>
                                 </div>
                                 <div class="progress" role="progressbar" aria-valuenow="{{ $order->progress }}" aria-valuemin="0" aria-valuemax="{{ $order->target }}" style="height: 15px">
                                     @php
