@@ -47,7 +47,7 @@
     </nav>
 </header>
 
-@section('custom-script')
+@push('scripts')
     <script>
         // Set Date Event
         let tanggal = document.getElementById("tanggal");
@@ -69,4 +69,4 @@
             });
         }
     </script>
-@endsection
+@endpush

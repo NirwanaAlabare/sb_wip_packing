@@ -21,7 +21,7 @@ class OrderList extends Component
     public $filterWs = '';
     public $filterProductType = '';
     public $filterStyle = '';
-    // public $filterDate = '';
+    public $filterDate = '';
 
     public $listeners = ['setDate' => 'setDate'];
 
@@ -62,6 +62,10 @@ class OrderList extends Component
     public function setDate($date)
     {
         $this->date = $date;
+
+        $this->orders = $this->orders->filter(function ($item) {
+            return $item['plan_date'] == $this->date;
+        })->values();
     }
 
     public function render()

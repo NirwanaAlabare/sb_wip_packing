@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\SignalBit\Undo;
+use App\Models\SignalBit\Rft;
+use App\Models\SignalBit\Defect;
+use App\Models\SignalBit\Reject;
+use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\MasterPlan;
 
 class UndoContent extends Component
@@ -24,6 +28,80 @@ class UndoContent extends Component
         $this->masterPlan = $masterPlan ? $masterPlan->id : null;
         $this->dateFrom = $this->dateFrom ? $this->dateFrom : date('Y-m-d');
         $this->dateTo = $this->dateTo ? $this->dateTo : date('Y-m-d');
+    }
+
+    public function restoreUndo()
+    {
+        $restoreData = Undo::selectRaw("*, output_undo_finish.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_finish.master_plan_id")->where("master_plan.sewing_line", "line_02")->where("master_plan.tgl_plan", '2024-01-26')->get();
+        $rft = [];
+        $defect = [];
+        $rework = [];
+        $reject = [];
+        $deleteUndoIds = [];
+
+        foreach ($restoreData as $restore) {
+            if ($restore->output_rft_id) {
+                array_push($rft, [
+                    "master_plan_id" => $restore->master_plan_id,
+                    "so_det_id" => $restore->so_det_id,
+                    'status' => 'NORMAL',
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+            }
+
+            if ($restore->output_defect_id) {
+                array_push($defect, [
+                    "master_plan_id" => $restore->master_plan_id,
+                    "so_det_id" => $restore->so_det_id,
+                    'status' => 'NORMAL',
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+            }
+
+            if ($restore->output_rework_id) {
+                array_push($rework, [
+                    "master_plan_id" => $restore->master_plan_id,
+                    "so_det_id" => $restore->so_det_id,
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+            }
+
+            if ($restore->output_reject_id) {
+                array_push($reject, [
+                    "master_plan_id" => $restore->master_plan_id,
+                    "so_det_id" => $restore->so_det_id,
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+            }
+
+            array_push($deleteUndoIds, $restore->undo_id);
+        }
+
+        if (count($rft) > 0) {
+            Rft::insert($rft);
+        }
+
+        if (count($defect) > 0) {
+            Defect::insert($defect);
+        }
+
+        if (count($reject) > 0) {
+            Reject::insert($reject);
+        }
+
+        if (count($rework) > 0) {
+            Rework::insert($rework);
+        }
+
+        if (count($deleteUndoIds) > 0) {
+            Undo::whereIn("id", $deleteUndoIds)->delete();
+        }
+
+        $this->emit('alert', [$rft, $defect, $rework, $reject]);
     }
 
     public function render()
