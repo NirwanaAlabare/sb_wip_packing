@@ -32,7 +32,7 @@ class UndoContent extends Component
 
     public function restoreUndo()
     {
-        $restoreData = Undo::selectRaw("*, output_undo_finish.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_finish.master_plan_id")->where("master_plan.sewing_line", "line_02")->where("master_plan.tgl_plan", '2024-01-26')->get();
+        $restoreData = Undo::selectRaw("*, output_undo_finish.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_finish.master_plan_id")->where("master_plan.tgl_plan", [$this->dateFrom, $this->dateTo])->get();
         $rft = [];
         $defect = [];
         $rework = [];
@@ -61,9 +61,17 @@ class UndoContent extends Component
             }
 
             if ($restore->output_rework_id) {
-                array_push($rework, [
+                $createDefect = Defect::create([
                     "master_plan_id" => $restore->master_plan_id,
                     "so_det_id" => $restore->so_det_id,
+                    'status' => 'REWORK',
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+
+                array_push($rework, [
+                    "defect_id" => $createDefect->id,
+                    "status" => "NORMAL",
                     "created_at" => $restore->created_at,
                     "updated_at" => $restore->updated_at,
                 ]);
