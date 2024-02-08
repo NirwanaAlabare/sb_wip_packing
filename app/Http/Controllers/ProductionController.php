@@ -57,10 +57,9 @@ class ProductionController extends Controller
             ->where('so_det.cancel', 'N')
             ->where('master_plan.cancel', 'N');
             if (Auth::user()->Groupp != "ALLSEWING") {
-                $orderWsDetailSizesSql->where('master_plan.sewing_line', Auth::user()->username);
+                $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
             }
-        $orderWsDetails = $orderWsDetailsSql
-            ->where('act_costing.kpno', $orderInfo->ws_number)
+        $orderWsDetails = $orderWsDetailsSql->where('act_costing.kpno', $orderInfo->ws_number)
             ->where('master_plan.tgl_plan', $orderInfo->tgl_plan)
             ->groupBy(
                 'master_plan.id',
