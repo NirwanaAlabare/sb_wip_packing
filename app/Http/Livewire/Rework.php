@@ -142,10 +142,10 @@ class Rework extends Component
     }
 
     public function submitAllRework() {
-        $allDefect = Defect::selectRaw('output_defects_finish.id id, output_defects_finish.master_plan_id master_plan_id, output_defects_finish.so_det_id so_det_id')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->get();
+        $allDefect = Defect::selectRaw('output_defects_packing.id id, output_defects_packing.master_plan_id master_plan_id, output_defects_packing.so_det_id so_det_id')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->get();
 
         if ($allDefect->count() > 0) {
             $rftArray = [];
@@ -196,13 +196,13 @@ class Rework extends Component
     }
 
     public function submitMassRework() {
-        $selectedDefect = Defect::selectRaw('output_defects_finish.*, so_det.size as size')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
-            where('output_defects_finish.defect_type_id', $this->massDefectType)->
-            where('output_defects_finish.defect_area_id', $this->massDefectArea)->
-            where('output_defects_finish.so_det_id', $this->massSize)->
+        $selectedDefect = Defect::selectRaw('output_defects_packing.*, so_det.size as size')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
+            where('output_defects_packing.defect_type_id', $this->massDefectType)->
+            where('output_defects_packing.defect_area_id', $this->massDefectArea)->
+            where('output_defects_packing.so_det_id', $this->massSize)->
             take($this->massQty)->get();
 
         if ($selectedDefect->count() > 0) {
@@ -313,64 +313,64 @@ class Rework extends Component
 
         $this->allDefectImage = MasterPlan::select('gambar')->find($this->orderInfo->id);
 
-        $this->allDefectPosition = Defect::where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
+        $this->allDefectPosition = Defect::where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             get();
 
-        $allDefectList = Defect::selectRaw('output_defects_finish.defect_type_id, output_defects_finish.defect_area_id, output_defect_types.defect_type, output_defect_areas.defect_area, count(*) as total')->
-            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
-            where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
+        $allDefectList = Defect::selectRaw('output_defects_packing.defect_type_id, output_defects_packing.defect_area_id, output_defect_types.defect_type, output_defect_areas.defect_area, count(*) as total')->
+            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             whereRaw("
                 (
                     output_defect_types.defect_type LIKE '%".$this->allDefectListFilter."%' OR
                     output_defect_areas.defect_area LIKE '%".$this->allDefectListFilter."%'
                 )
             ")->
-            groupBy('output_defects_finish.defect_type_id', 'output_defects_finish.defect_area_id', 'output_defect_types.defect_type', 'output_defect_areas.defect_area')->
-            orderBy('output_defects_finish.updated_at', 'desc')->
+            groupBy('output_defects_packing.defect_type_id', 'output_defects_packing.defect_area_id', 'output_defect_types.defect_type', 'output_defect_areas.defect_area')->
+            orderBy('output_defects_packing.updated_at', 'desc')->
             paginate(5, ['*'], 'allDefectListPage');
 
-        $defects = Defect::selectRaw('output_defects_finish.*, so_det.size as so_det_size')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
-            where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
+        $defects = Defect::selectRaw('output_defects_packing.*, so_det.size as so_det_size')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             whereRaw("(
-                output_defects_finish.id LIKE '%".$this->searchDefect."%' OR
+                output_defects_packing.id LIKE '%".$this->searchDefect."%' OR
                 so_det.size LIKE '%".$this->searchDefect."%' OR
                 output_defect_areas.defect_area LIKE '%".$this->searchDefect."%' OR
                 output_defect_types.defect_type LIKE '%".$this->searchDefect."%' OR
-                output_defects_finish.defect_status LIKE '%".$this->searchDefect."%'
+                output_defects_packing.defect_status LIKE '%".$this->searchDefect."%'
             )")->
-            orderBy('output_defects_finish.updated_at', 'desc')->paginate(10, ['*'], 'defectsPage');
+            orderBy('output_defects_packing.updated_at', 'desc')->paginate(10, ['*'], 'defectsPage');
 
-        $reworks = ReworkModel::selectRaw('output_reworks_finish.*, so_det.size as so_det_size')->
-            leftJoin('output_defects_finish', 'output_defects_finish.id', '=', 'output_reworks_finish.defect_id')->
-            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            where('output_defects_finish.defect_status', 'reworked')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
+        $reworks = ReworkModel::selectRaw('output_reworks_packing.*, so_det.size as so_det_size')->
+            leftJoin('output_defects_packing', 'output_defects_packing.id', '=', 'output_reworks_packing.defect_id')->
+            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            where('output_defects_packing.defect_status', 'reworked')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             whereRaw("(
-                output_reworks_finish.id LIKE '%".$this->searchRework."%' OR
-                output_defects_finish.id LIKE '%".$this->searchRework."%' OR
+                output_reworks_packing.id LIKE '%".$this->searchRework."%' OR
+                output_defects_packing.id LIKE '%".$this->searchRework."%' OR
                 so_det.size LIKE '%".$this->searchRework."%' OR
                 output_defect_areas.defect_area LIKE '%".$this->searchRework."%' OR
                 output_defect_types.defect_type LIKE '%".$this->searchRework."%' OR
-                output_defects_finish.defect_status LIKE '%".$this->searchRework."%'
+                output_defects_packing.defect_status LIKE '%".$this->searchRework."%'
             )")->
-            orderBy('output_reworks_finish.updated_at', 'desc')->paginate(10, ['*'], 'reworksPage');
+            orderBy('output_reworks_packing.updated_at', 'desc')->paginate(10, ['*'], 'reworksPage');
 
-        $this->massSelectedDefect = Defect::selectRaw('output_defects_finish.so_det_id, so_det.size as size, count(*) as total')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            where('output_defects_finish.defect_status', 'defect')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
-            where('output_defects_finish.defect_type_id', $this->massDefectType)->
-            where('output_defects_finish.defect_area_id', $this->massDefectArea)->
-            groupBy('output_defects_finish.so_det_id', 'so_det.size')->get();
+        $this->massSelectedDefect = Defect::selectRaw('output_defects_packing.so_det_id, so_det.size as size, count(*) as total')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            where('output_defects_packing.defect_status', 'defect')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
+            where('output_defects_packing.defect_type_id', $this->massDefectType)->
+            where('output_defects_packing.defect_area_id', $this->massDefectArea)->
+            groupBy('output_defects_packing.so_det_id', 'so_det.size')->get();
 
         return view('livewire.rework' , ['defects' => $defects, 'reworks' => $reworks, 'allDefectList' => $allDefectList]);
     }

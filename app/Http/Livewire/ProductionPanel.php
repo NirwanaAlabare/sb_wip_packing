@@ -231,20 +231,20 @@ class ProductionPanel extends Component
                 break;
             case 'defect' :
                 // Undo DEFECT
-                $defectQuery = Defect::selectRaw('output_defects_finish.id as defect_id, output_defects_finish.*')->
-                    leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-                    leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
+                $defectQuery = Defect::selectRaw('output_defects_packing.id as defect_id, output_defects_packing.*')->
+                    leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+                    leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
                     where('master_plan_id', $this->orderInfo->id)->
                     where('so_det_id', $this->undoSize)->
                     where('defect_status', 'defect');
                 if ($this->undoDefectType) {
-                    $defectQuery->where('output_defects_finish.defect_type_id', $this->undoDefectType);
+                    $defectQuery->where('output_defects_packing.defect_type_id', $this->undoDefectType);
                 };
                 if ($this->undoDefectArea) {
-                    $defectQuery->where('output_defects_finish.defect_area_id', $this->undoDefectArea);
+                    $defectQuery->where('output_defects_packing.defect_area_id', $this->undoDefectArea);
                 };
-                $defectQuery->orderBy('output_defects_finish.updated_at', 'DESC')->
-                    orderBy('output_defects_finish.created_at', 'DESC')->
+                $defectQuery->orderBy('output_defects_packing.updated_at', 'DESC')->
+                    orderBy('output_defects_packing.created_at', 'DESC')->
                     take($this->undoQty);
 
                 $getDefects = $defectQuery->get();
@@ -304,20 +304,20 @@ class ProductionPanel extends Component
                 break;
             case 'rework' :
                 // Undo REWORK
-                $defectQuery = Defect::selectRaw('output_defects_finish.id as defect_id, output_defects_finish.*')->
-                    leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-                    leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
+                $defectQuery = Defect::selectRaw('output_defects_packing.id as defect_id, output_defects_packing.*')->
+                    leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+                    leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
                     where('master_plan_id', $this->orderInfo->id)->
                     where('so_det_id', $this->undoSize)->
                     where('defect_status', 'reworked');
                 if ($this->undoDefectType) {
-                    $defectQuery->where('output_defects_finish.defect_type_id', $this->undoDefectType);
+                    $defectQuery->where('output_defects_packing.defect_type_id', $this->undoDefectType);
                 }
                 if ($this->undoDefectArea) {
-                    $defectQuery->where('output_defects_finish.defect_area_id', $this->undoDefectArea);
+                    $defectQuery->where('output_defects_packing.defect_area_id', $this->undoDefectArea);
                 }
-                $getDefects = $defectQuery->orderBy('output_defects_finish.updated_at', 'DESC')->
-                    orderBy('output_defects_finish.created_at', 'DESC')->
+                $getDefects = $defectQuery->orderBy('output_defects_packing.updated_at', 'DESC')->
+                    orderBy('output_defects_packing.created_at', 'DESC')->
                     limit($this->undoQty)->
                     get();
 
@@ -325,7 +325,7 @@ class ProductionPanel extends Component
                 foreach ($getDefects as $defect) {
                     Undo::create(['master_plan_id' => $defect->master_plan_id, 'so_det_id' => $defect->so_det_id, 'output_rework_id' => $defect->rework->id, 'keterangan' => 'rework',]);
                     Defect::where('id', $defect->defect_id)->update(['defect_status' => 'defect']);
-                    Rft::leftJoin('output_reworks_finish', 'output_reworks_finish.id', '=', 'output_rfts_finish.rework_id')->where('output_reworks_finish.defect_id', $defect->defect_id)->delete();
+                    Rft::leftJoin('output_reworks_packing', 'output_reworks_packing.id', '=', 'output_rfts_packing.rework_id')->where('output_reworks_packing.defect_id', $defect->defect_id)->delete();
                     Rework::where('defect_id', $defect->defect_id)->delete();
                 }
 
@@ -352,6 +352,7 @@ class ProductionPanel extends Component
         $this->orderInfo = MasterPlan::selectRaw("
                 master_plan.id as id,
                 master_plan.tgl_plan as tgl_plan,
+                master_plan.id_ws as id_ws,
                 act_costing.kpno as ws_number,
                 act_costing.styleno as style_name,
                 mastersupplier.supplier as buyer_name,
@@ -427,7 +428,7 @@ class ProductionPanel extends Component
 
     public function deleteRedundant() {
         $redundantData = DB::select(DB::raw(
-            "select defect_id, jml from (select defect_id, COUNT(defect_id) jml from (SELECT a.* from output_reworks_finish a inner join output_defects_finish c on c.id = a.defect_id inner join master_plan b on b.id = c.master_plan_id where ".(Auth::user()->Groupp != 'ALLSEWING' ? "b.sewing_line = '".strtoupper(Auth::user()->username)."' AND " : "")." DATE_FORMAT(a.created_at, '%Y-%m-%d') = CURRENT_DATE() order by a.defect_id asc) a GROUP BY a.defect_id) a where a.jml > 1"
+            "select defect_id, jml from (select defect_id, COUNT(defect_id) jml from (SELECT a.* from output_reworks_packing a inner join output_defects_packing c on c.id = a.defect_id inner join master_plan b on b.id = c.master_plan_id where ".(Auth::user()->Groupp != 'ALLSEWING' ? "b.sewing_line = '".strtoupper(Auth::user()->username)."' AND " : "")." DATE_FORMAT(a.created_at, '%Y-%m-%d') = CURRENT_DATE() order by a.defect_id asc) a GROUP BY a.defect_id) a where a.jml > 1"
         ));
 
         foreach ($redundantData as $redundant) {
@@ -458,14 +459,14 @@ class ProductionPanel extends Component
                 (
                     select
                         master_plan.id master_plan_id,
-                        count(output_rfts_finish.id) output
+                        count(output_rfts_packing.id) output
                     from
-                        output_rfts_finish
+                        output_rfts_packing
                     left join
-                        master_plan on master_plan.id = output_rfts_finish.master_plan_id
+                        master_plan on master_plan.id = output_rfts_packing.master_plan_id
                     where
                         master_plan.id = '".$this->orderInfo->id."'
-                        and output_rfts_finish.status = 'NORMAL'
+                        and output_rfts_packing.status = 'NORMAL'
                     group by
                         master_plan.id
                 ) rfts
@@ -476,14 +477,14 @@ class ProductionPanel extends Component
                 (
                     select
                         master_plan.id master_plan_id,
-                        count(output_defects_finish.id) output
+                        count(output_defects_packing.id) output
                     from
-                        output_defects_finish
+                        output_defects_packing
                     left join
-                        master_plan on master_plan.id = output_defects_finish.master_plan_id
+                        master_plan on master_plan.id = output_defects_packing.master_plan_id
                     where
                         master_plan.id = '".$this->orderInfo->id."'
-                        and output_defects_finish.defect_status = 'defect'
+                        and output_defects_packing.defect_status = 'defect'
                     group by
                         master_plan.id
                 ) defects
@@ -494,14 +495,14 @@ class ProductionPanel extends Component
                 (
                     select
                         master_plan.id master_plan_id,
-                        count(output_defects_finish.id) output
+                        count(output_defects_packing.id) output
                     from
-                        output_defects_finish
+                        output_defects_packing
                     left join
-                        master_plan on master_plan.id = output_defects_finish.master_plan_id
+                        master_plan on master_plan.id = output_defects_packing.master_plan_id
                     where
                         master_plan.id = '".$this->orderInfo->id."'
-                        and output_defects_finish.defect_status = 'reworked'
+                        and output_defects_packing.defect_status = 'reworked'
                     group by
                         master_plan.id
                 ) reworks
@@ -512,11 +513,11 @@ class ProductionPanel extends Component
                 (
                     select
                         master_plan.id master_plan_id,
-                        count(output_rejects_finish.id) output
+                        count(output_rejects_packing.id) output
                     from
-                        output_rejects_finish
+                        output_rejects_packing
                     left join
-                        master_plan on master_plan.id = output_rejects_finish.master_plan_id
+                        master_plan on master_plan.id = output_rejects_packing.master_plan_id
                     where
                         master_plan.id = '".$this->orderInfo->id."'
                     group by
@@ -539,7 +540,7 @@ class ProductionPanel extends Component
         switch ($this->undoType) {
             case 'rft' :
                 $this->undoSizes = Rft::selectRaw('so_det.id as so_det_id, so_det.size, count(*) as total')->
-                    leftJoin('so_det', 'so_det.id', '=', 'output_rfts_finish.so_det_id')->
+                    leftJoin('so_det', 'so_det.id', '=', 'output_rfts_packing.so_det_id')->
                     where('master_plan_id', $this->orderInfo->id)->
                     where('status', 'NORMAL')->
                     orderBy('updated_at', 'DESC')->
@@ -549,7 +550,7 @@ class ProductionPanel extends Component
                 break;
             case 'defect' :
                 $this->undoSizes = Defect::selectRaw('so_det.id as so_det_id, so_det.size, count(*) as total')->
-                    leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
+                    leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
                     where('master_plan_id', $this->orderInfo->id)->
                     where('status', 'NORMAL')->
                     where('defect_status', 'defect')->
@@ -560,7 +561,7 @@ class ProductionPanel extends Component
                 break;
             case 'reject' :
                 $this->undoSizes = Reject::selectRaw('so_det.id as so_det_id, so_det.size, count(*) as total')->
-                    leftJoin('so_det', 'so_det.id', '=', 'output_rejects_finish.so_det_id')->
+                    leftJoin('so_det', 'so_det.id', '=', 'output_rejects_packing.so_det_id')->
                     where('master_plan_id', $this->orderInfo->id)->
                     where('status', 'NORMAL')->
                     orderBy('updated_at', 'DESC')->
@@ -570,12 +571,12 @@ class ProductionPanel extends Component
                 break;
             case 'rework' :
                 $this->undoSizes = Rework::selectRaw('so_det.id as so_det_id, so_det.size, count(*) as total')->
-                    leftJoin('output_defects_finish', 'output_defects_finish.id', '=', 'output_reworks_finish.defect_id')->
-                    leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-                    where('output_defects_finish.master_plan_id', $this->orderInfo->id)->
-                    where('output_reworks_finish.status', 'NORMAL')->
-                    orderBy('output_reworks_finish.updated_at', 'DESC')->
-                    orderBy('output_reworks_finish.created_at', 'DESC')->
+                    leftJoin('output_defects_packing', 'output_defects_packing.id', '=', 'output_reworks_packing.defect_id')->
+                    leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+                    where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
+                    where('output_reworks_packing.status', 'NORMAL')->
+                    orderBy('output_reworks_packing.updated_at', 'DESC')->
+                    orderBy('output_reworks_packing.created_at', 'DESC')->
                     groupBy('so_det.id', 'so_det.size')->
                     get();
                 break;

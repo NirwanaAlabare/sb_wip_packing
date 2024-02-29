@@ -5,19 +5,22 @@ namespace App\Models\SignalBit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reject extends Model
+class EndlineOutput extends Model
 {
     use HasFactory;
 
     protected $connection = 'mysql_sb';
 
-    protected $table = 'output_rejects_packing';
+    protected $table = 'output_rfts';
 
     protected $fillable = [
         'id',
+        'id_ws',
         'master_plan_id',
         'so_det_id',
+        'kode_numbering',
         'status',
+        'rework_id',
         'created_at',
         'updated_at',
     ];
@@ -25,10 +28,5 @@ class Reject extends Model
     public function masterPlan()
     {
         return $this->belongsTo(MasterPlan::class, 'master_plan_id', 'id');
-    }
-
-    public function undo()
-    {
-        return $this->hasOne(Undo::class, 'output_reject_id', 'id');
     }
 }

@@ -79,22 +79,22 @@ class DefectHistory extends Component
         $defectTypes = DefectType::get();
         $defectAreas = DefectArea::get();
         $defects = Defect::selectRaw('
-                output_defects_finish.updated_at,
+                output_defects_packing.updated_at,
                 so_det.size as so_det_size,
                 master_plan.gambar,
-                output_defects_finish.defect_area_x,
-                output_defects_finish.defect_area_y,
+                output_defects_packing.defect_area_x,
+                output_defects_packing.defect_area_y,
                 output_defect_types.defect_type,
                 output_defect_areas.defect_area,
-                output_defects_finish.defect_status,
+                output_defects_packing.defect_status,
                 count(*) as total
             ')->
-            leftJoin('master_plan', 'master_plan.id', '=', 'output_defects_finish.master_plan_id')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects_finish.so_det_id')->
-            leftJoin('output_product_types', 'output_product_types.id', '=', 'output_defects_finish.product_type_id')->
-            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_finish.defect_area_id')->
-            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_finish.defect_type_id')->
-            where('output_defects_finish.master_plan_id', $this->orderInfo->id);
+            leftJoin('master_plan', 'master_plan.id', '=', 'output_defects_packing.master_plan_id')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
+            leftJoin('output_product_types', 'output_product_types.id', '=', 'output_defects_packing.product_type_id')->
+            leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
+            leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            where('output_defects_packing.master_plan_id', $this->orderInfo->id);
 
         if ($this->filterDefectSize != null && $this->filterDefectSize != 'all') {
             $defects->where('so_det.id', $this->filterDefectSize);
@@ -109,27 +109,27 @@ class DefectHistory extends Component
         }
 
         if ($this->filterDefectStatus != null && $this->filterDefectStatus != 'all') {
-            $defects->where('output_defects_finish.defect_status', $this->filterDefectStatus);
+            $defects->where('output_defects_packing.defect_status', $this->filterDefectStatus);
         }
 
         $filteredDefects = $defects->whereRaw("(
-            output_defects_finish.id LIKE '%".$this->search."%' OR
+            output_defects_packing.id LIKE '%".$this->search."%' OR
             so_det.size LIKE '%".$this->search."%' OR
             output_defect_areas.defect_area LIKE '%".$this->search."%' OR
             output_defect_types.defect_type LIKE '%".$this->search."%' OR
-            output_defects_finish.defect_status LIKE '%".$this->search."%'
+            output_defects_packing.defect_status LIKE '%".$this->search."%'
         )")->
         groupBy(
-            'output_defects_finish.updated_at',
+            'output_defects_packing.updated_at',
             'so_det.size',
             'master_plan.gambar',
             'output_defect_types.defect_type',
             'output_defect_areas.defect_area',
-            'output_defects_finish.defect_area_x',
-            'output_defects_finish.defect_area_y',
-            'output_defects_finish.defect_status'
+            'output_defects_packing.defect_area_x',
+            'output_defects_packing.defect_area_y',
+            'output_defects_packing.defect_status'
         )->
-        orderBy('output_defects_finish.updated_at', 'desc')->paginate(10);
+        orderBy('output_defects_packing.updated_at', 'desc')->paginate(10);
 
         return view('livewire.defect-history', ['defects' => $filteredDefects, 'productTypes' => $productTypes, 'defectTypes' => $defectTypes, 'defectAreas' => $defectAreas]);
     }

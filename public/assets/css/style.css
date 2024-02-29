@@ -58,7 +58,7 @@ html, body {
 .loading {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 16px solid var(--sb-color);
+    border-top: 16px solid var(--rft-color-sec);
     width: 120px;
     height: 120px;
     -webkit-animation: spin 1s linear infinite;
@@ -68,7 +68,7 @@ html, body {
 .loading-small {
     border: 5px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 5px solid var(--sb-color);
+    border-top: 5px solid var(--rft-color-sec);
     width: 30px;
     height: 30px;
     -webkit-animation: spin 1s linear infinite;
@@ -335,7 +335,7 @@ input[type=number] {
 
 /* Navbar */
 .navbar {
-    border-bottom: 3px solid var(--sb-secondary-color);
+    border-bottom: 3px solid var(--rft-color-sec);
     padding-top: 0;
     padding-bottom: 0;
 }

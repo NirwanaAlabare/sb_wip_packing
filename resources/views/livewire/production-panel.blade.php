@@ -263,7 +263,7 @@
 
     @if (!$panels)
         {{-- Back --}}
-        <a wire:click="toProductionPanel" class="back bg-sb-secondary text-light text-center w-auto">
+        <a wire:click="toProductionPanel" class="back bg-success text-light text-center w-auto">
             <i class="fa-regular fa-reply"></i>
         </a>
     @endif

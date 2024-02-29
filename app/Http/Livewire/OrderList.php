@@ -95,11 +95,11 @@ class OrderList extends Component
                         select
                             master_plan.id_ws,
                             master_plan.sewing_line,
-                            count(output_rfts_finish.id) as progress
+                            count(output_rfts_packing.id) as progress
                         from
                             master_plan
                         left join
-                            output_rfts_finish on output_rfts_finish.master_plan_id = master_plan.id
+                            output_rfts_packing on output_rfts_packing.master_plan_id = master_plan.id
                         where
                             ".(Auth::user()->Groupp != 'ALLSEWING' ? "master_plan.sewing_line = '".strtoupper(Auth::user()->username)."' AND" : "")."
                             master_plan.tgl_plan = '".$this->date."' AND

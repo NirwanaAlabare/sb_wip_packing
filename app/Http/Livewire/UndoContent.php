@@ -32,7 +32,7 @@ class UndoContent extends Component
 
     public function restoreUndo()
     {
-        $restoreData = Undo::selectRaw("*, output_undo_finish.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_finish.master_plan_id")->where("master_plan.tgl_plan", [$this->dateFrom, $this->dateTo])->get();
+        $restoreData = Undo::selectRaw("*, output_undo_packing.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_packing.master_plan_id")->where("master_plan.tgl_plan", [$this->dateFrom, $this->dateTo])->get();
         $rft = [];
         $defect = [];
         $rework = [];
@@ -138,20 +138,20 @@ class UndoContent extends Component
         //     LIMIT 10
         // "));
 
-        $latestUndoSql = Undo::selectRaw('output_undo_finish.updated_at, output_undo_finish.keterangan, so_det.size as size, count(*) as total')->
-            leftJoin('master_plan', 'master_plan.id', '=', 'output_undo_finish.master_plan_id')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_undo_finish.so_det_id');
+        $latestUndoSql = Undo::selectRaw('output_undo_packing.updated_at, output_undo_packing.keterangan, so_det.size as size, count(*) as total')->
+            leftJoin('master_plan', 'master_plan.id', '=', 'output_undo_packing.master_plan_id')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_undo_packing.so_det_id');
             if (Auth::user()->Groupp != 'ALLSEWING') {
                 $latestUndoSql->where('master_plan.sewing_line', Auth::user()->username);
             }
             if ($this->masterPlan) {
                 $latestUndoSql->where('master_plan.id', $this->masterPlan);
             }
-        $latestUndo = $latestUndoSql->whereRaw("DATE(output_undo_finish.created_at) BETWEEN '".$this->dateFrom."' AND '".$this->dateTo."'")->
+        $latestUndo = $latestUndoSql->whereRaw("DATE(output_undo_packing.created_at) BETWEEN '".$this->dateFrom."' AND '".$this->dateTo."'")->
             whereRaw("master_plan.tgl_plan BETWEEN '".$this->dateFrom."' AND '".$this->dateTo."'")->
-            groupBy("output_undo_finish.updated_at", "output_undo_finish.keterangan", "so_det.size")->
-            orderBy("output_undo_finish.updated_at", "desc")->
-            orderBy("output_undo_finish.created_at", "desc")->
+            groupBy("output_undo_packing.updated_at", "output_undo_packing.keterangan", "so_det.size")->
+            orderBy("output_undo_packing.updated_at", "desc")->
+            orderBy("output_undo_packing.created_at", "desc")->
             paginate(10, ['*'], 'latestUndoPage');
 
         return view('livewire.undo-content', [

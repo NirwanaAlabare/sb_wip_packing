@@ -3,16 +3,16 @@
         <div class="input-group mb-3">
             <input type="hidden" wire:model='date'>
             <input type="text" class="form-control" wire:model='search' placeholder="Search Order...">
-            <button class="btn btn-sb-secondary" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
+            <button class="btn btn-success" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
         </div>
-        <button class="btn btn-sb btn-sb-secondary-outline mb-3" type="button" wire:click="preSubmitFilter"><i class="fa-regular fa-filter"></i></button>
+        <button class="btn btn-outline-success mb-3" type="button" wire:click="preSubmitFilter"><i class="fa-regular fa-filter"></i></button>
     </div>
 
     <div class="w-100" wire:loading wire:target='search, date, filterLine, filterBuyer, filterWs, filterProductType, filterStyle'>
         <div class="loading-container">
             <div class="loading"></div>
         </div>
-        <p class="text-center text-sb-secondary fw-bold mt-3 mb-0">
+        <p class="text-center text-success fw-bold mt-3 mb-0">
             Mohon Tunggu...
         </p>
     </div>
@@ -66,7 +66,7 @@
                                     @php
                                         $outputProgress = $order->target > 0 ? floatval($order->progress)/floatval($order->target) * 100 : 0;
                                     @endphp
-                                    <div class="progress-bar fw-bold {{ $outputProgress > 100 ? 'bg-rft' : 'bg-sb-secondary' }}" style="width:{{  $outputProgress }}%">{{ $outputProgress > 100 ? 'TARGET TERLAMPAUI' : '' }}</div>
+                                    <div class="progress-bar fw-bold {{ $outputProgress > 100 ? 'bg-rft' : 'bg-success' }}" style="width:{{  $outputProgress }}%">{{ $outputProgress > 100 ? 'TARGET TERLAMPAUI' : '' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
     <div class="modal" tabindex="-1" id="filter-modal" wire:ignore.self>
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-sb-secondary text-light">
+                <div class="modal-header bg-success text-light">
                     <h5 class="modal-title"><i class="fa-regular fa-filter"></i> FILTER</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-regular fa-times"></i> Tutup</button>
-                    <button type="button" class="btn btn-primary" wire:click="clearFilter"><i class="fa-regular fa-broom"></i> Bersihkan</button>
+                    <button type="button" class="btn btn-success" wire:click="clearFilter"><i class="fa-regular fa-broom"></i> Bersihkan</button>
                     {{-- <button type="button" class="btn btn-success" wire:click='submitFilter'><i class="fa-regular fa-check"></i> Terapkan</button> --}}
                 </div>
             </div>
