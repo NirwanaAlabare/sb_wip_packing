@@ -271,6 +271,43 @@
 
 @push('scripts')
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            restrictYesterdayMasterPlan();
+        });
+
+        window.addEventListener("focus", () => {
+            restrictYesterdayMasterPlan();
+        });
+
+        // Pad 2 Digits
+        function pad(n) {
+            return n < 10 ? '0' + n : n
+        }
+
+        // Restrict Yesterday Master Plan
+        function restrictYesterdayMasterPlan() {
+            let date = new Date();
+            let day = pad(date.getDate());
+            let month = pad(date.getMonth() + 1);
+            let year = date.getFullYear();
+
+            // This arrangement can be altered based on how we want the date's format to appear.
+            let currentDate = `${year}-${month}-${day}`;
+
+            console.log(@this.orderDate, currentDate);
+
+            if (@this.orderDate != currentDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Anda sedang mengakses Master Plan yang sudah berlalu',
+                    html: `Master Plan yang anda akses berasal dari tanggal <br> <b>'`+ document.getElementById('tanggal').value +`'</b> <br> `,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Oke',
+                    confirmButtonColor: '#6531a0'
+                });
+            }
+        }
+
         $('#product-color').on('change', function (e) {
             var selectedColor = $('#product-color').select2("val");
             var selectedColorName = $('#product-color').find(':selected').data('color-name');
