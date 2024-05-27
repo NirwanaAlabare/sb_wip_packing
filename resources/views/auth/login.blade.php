@@ -9,6 +9,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('images/packingline.ico') }}">
     <title>NDS PACKING LINE</title>
 
+    @include('layouts.link')
+
     <script defer src="{{ asset('alpinejs/dist/cdn.min.js') }}"></script>
 </head>
 

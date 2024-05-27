@@ -29,7 +29,6 @@ function showDate() {
             let dateFormat = setDateFormat(date);
 
             document.getElementById("tanggal").value = dateFormat;
-        }
     }
 }
 
