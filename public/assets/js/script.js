@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // show date
 function showDate() {
-    if (document.getElementById("tanggal").value == "" || document.getElementById("tanggal").value == null) {
+    if (document.getElementById("tanggal") && (document.getElementById("tanggal").value == "" || document.getElementById("tanggal").value == null)) {
         let date = new Date();
 
         let dateFormat = setDateFormat(date);
