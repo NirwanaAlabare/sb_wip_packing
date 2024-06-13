@@ -83,14 +83,14 @@ return [
             ]) : [],
         ],
 
-        'mysql_sb_wip' => [
+        'mysql_nds' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_SB_WIP', '127.0.0.1'),
-            'port' => env('DB_PORT_SB_WIP', '3306'),
-            'database' => env('DB_DATABASE_SB_WIP', 'forge'),
-            'username' => env('DB_USERNAME_SB_WIP', 'forge'),
-            'password' => env('DB_PASSWORD_SB_WIP', ''),
+            'host' => env('DB_HOST_NDS', '127.0.0.1'),
+            'port' => env('DB_PORT_NDS', '3306'),
+            'database' => env('DB_DATABASE_NDS', 'forge'),
+            'username' => env('DB_USERNAME_NDS', 'forge'),
+            'password' => env('DB_PASSWORD_NDS', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

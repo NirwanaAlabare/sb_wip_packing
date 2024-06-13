@@ -10,6 +10,7 @@ use App\Models\SignalBit\MasterPlan;
 use App\Models\SignalBit\Rft;
 use App\Models\SignalBit\Defect;
 use App\Models\SignalBit\Rework as ReworkModel;
+use App\Models\Nds\OutputPacking;
 use DB;
 
 class Rework extends Component
@@ -149,6 +150,7 @@ class Rework extends Component
 
         if ($allDefect->count() > 0) {
             $rftArray = [];
+            $rftNdsArray = [];
             foreach ($allDefect as $defect) {
                 // create rework
                 $createRework = ReworkModel::create([
@@ -165,6 +167,17 @@ class Rework extends Component
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
+
+                // add rft nds array
+                array_push($rftNdsArray, [
+                    'sewing_line' => $this->orderInfo->sewing_line,
+                    'master_plan_id' => $defect->master_plan_id,
+                    'so_det_id' => $defect->so_det_id,
+                    "status" => "REWORK",
+                    "rework_id" => $createRework->id,
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
+                ]);
             }
             // update defect
             $defectSql = Defect::where('master_plan_id', $this->orderInfo->id)->update([
@@ -173,6 +186,7 @@ class Rework extends Component
 
             // create rft
             $createRft = Rft::insert($rftArray);
+            $createRftNds = OutputPacking::insert($rftNdsArray);
 
             if ($allDefect->count() > 0) {
                 $this->emit('alert', 'success', "Semua DEFECT berhasil di REWORK");
@@ -207,6 +221,7 @@ class Rework extends Component
 
         if ($selectedDefect->count() > 0) {
             $rftArray = [];
+            $rftNdsArray = [];
             $defectIds = [];
             foreach ($selectedDefect as $defect) {
                 // create rework
@@ -227,6 +242,17 @@ class Rework extends Component
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
+
+                // add rft nds array
+                array_push($rftNdsArray, [
+                    'sewing_line' => $this->orderInfo->sewing_line,
+                    'master_plan_id' => $defect->master_plan_id,
+                    'so_det_id' => $defect->so_det_id,
+                    "status" => "REWORK",
+                    "rework_id" => $createRework->id,
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
+                ]);
             }
             // update defect
             $defectSql = Defect::whereIn('id', $defectIds)->update([
@@ -235,6 +261,8 @@ class Rework extends Component
 
             // create rft
             $createRft = Rft::insert($rftArray);
+            // create rft nds
+            $createRftNds = OutputPacking::insert($rftNdsArray);
 
             if ($selectedDefect->count() > 0) {
                 $this->emit('alert', 'success', "DEFECT dengan Ukuran : ".$selectedDefect[0]->size.", Tipe : ".$this->massDefectTypeName." dan Area : ".$this->massDefectAreaName." berhasil di REWORK sebanyak ".$selectedDefect->count()." kali.");
@@ -273,6 +301,15 @@ class Rework extends Component
                 "rework_id" => $createRework->id
             ]);
 
+            // add to rft
+            $createRftNds = OutputPacking::create([
+                'sewing_line' => $this->orderInfo->sewing_line,
+                'master_plan_id' => $getDefect->master_plan_id,
+                'so_det_id' => $getDefect->so_det_id,
+                "status" => "REWORK",
+                "rework_id" => $createRework->id
+            ]);
+
             if ($createRework && $updateDefect && $createRft) {
                 $this->emit('alert', 'success', "DEFECT dengan ID : ".$defectId." berhasil di REWORK.");
             } else {
@@ -296,6 +333,9 @@ class Rework extends Component
 
         // delete from rft
         $deleteRft = Rft::where('rework_id', $reworkId)->delete();
+
+        // delete from rft nds
+        $deleteRftNds = OutputPacking::where('rework_id', $reworkId)->delete();
 
         if ($deleteRework && $updateDefect && $deleteRft) {
             $this->emit('alert', 'success', "REWORK dengan REWORK ID : ".$reworkId." dan DEFECT ID : ".$defectId." berhasil di kembalikan ke DEFECT.");

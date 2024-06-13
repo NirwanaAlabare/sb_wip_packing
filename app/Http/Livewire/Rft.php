@@ -9,6 +9,7 @@ use App\Models\SignalBit\Defect;
 use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\Reject;
 use App\Models\SignalBit\EndlineOutput;
+use App\Models\Nds\OutputPacking;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DB;
@@ -104,6 +105,7 @@ class Rft extends Component
         }
 
         $insertData = [];
+        $insertDataNds = [];
         if ($this->outputInput > 0) {
             for ($i = 0; $i < $this->outputInput; $i++)
             {
@@ -114,9 +116,20 @@ class Rft extends Component
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
+
+                array_push($insertDataNds, [
+                    'sewing_line' => $this->orderInfo->sewing_line,
+                    'master_plan_id' => $this->orderInfo->id,
+                    'so_det_id' => $this->sizeInput,
+                    'status' => 'NORMAL',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
             }
 
             $insertRft = RftModel::insert($insertData);
+
+            $insertRftNds = OutputPacking::insert($insertDataNds);
 
             if ($insertRft) {
                 $getSize = DB::table('so_det')
