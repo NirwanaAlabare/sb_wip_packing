@@ -4,13 +4,13 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Facades\Auth;
 use App\Models\SignalBit\Rft as RftModel;
 use App\Models\SignalBit\Defect;
 use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\Reject;
 use App\Models\SignalBit\EndlineOutput;
 use App\Models\Nds\OutputPacking;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DB;
 
@@ -113,6 +113,7 @@ class Rft extends Component
                     'master_plan_id' => $this->orderInfo->id,
                     'so_det_id' => $this->sizeInput,
                     'status' => 'NORMAL',
+                    'created_by' => Auth::user()->id,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
@@ -122,6 +123,7 @@ class Rft extends Component
                     'master_plan_id' => $this->orderInfo->id,
                     'so_det_id' => $this->sizeInput,
                     'status' => 'NORMAL',
+                    'created_by' => Auth::user()->id,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);

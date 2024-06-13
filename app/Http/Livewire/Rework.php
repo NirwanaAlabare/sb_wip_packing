@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Models\SignalBit\MasterPlan;
 use App\Models\SignalBit\Rft;
@@ -155,7 +156,8 @@ class Rework extends Component
                 // create rework
                 $createRework = ReworkModel::create([
                     "defect_id" => $defect->id,
-                    "status" => "NORMAL"
+                    "status" => "NORMAL",
+                    "created_by" => Auth::user()->id
                 ]);
 
                 // add rft array
@@ -164,6 +166,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
+                    "created_by" => Auth::user()->id,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -175,10 +178,12 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
+                    "created_by" => Auth::user()->id,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
             }
+
             // update defect
             $defectSql = Defect::where('master_plan_id', $this->orderInfo->id)->update([
                 "defect_status" => "reworked"
@@ -227,7 +232,8 @@ class Rework extends Component
                 // create rework
                 $createRework = ReworkModel::create([
                     "defect_id" => $defect->id,
-                    "status" => "NORMAL"
+                    "status" => "NORMAL",
+                    "created_by" => Auth::user()->id
                 ]);
 
                 // add defect id array
@@ -239,6 +245,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
+                    "created_by" => Auth::user()->id,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -250,6 +257,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
+                    "created_by" => Auth::user()->id,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -283,7 +291,8 @@ class Rework extends Component
             // add to rework
             $createRework = ReworkModel::create([
                 "defect_id" => $defectId,
-                "status" => "NORMAL"
+                "status" => "NORMAL",
+                "created_by" => Auth::user()->id
             ]);
 
             // remove from defect
@@ -298,7 +307,8 @@ class Rework extends Component
                 'master_plan_id' => $getDefect->master_plan_id,
                 'so_det_id' => $getDefect->so_det_id,
                 "status" => "REWORK",
-                "rework_id" => $createRework->id
+                "rework_id" => $createRework->id,
+                "created_by" => Auth::user()->id
             ]);
 
             // add to rft
@@ -307,7 +317,8 @@ class Rework extends Component
                 'master_plan_id' => $getDefect->master_plan_id,
                 'so_det_id' => $getDefect->so_det_id,
                 "status" => "REWORK",
-                "rework_id" => $createRework->id
+                "rework_id" => $createRework->id,
+                "created_by" => Auth::user()->id
             ]);
 
             if ($createRework && $updateDefect && $createRft) {

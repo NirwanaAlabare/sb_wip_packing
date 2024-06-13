@@ -93,6 +93,7 @@ class OrderList extends Component
                 DB::raw("
                     (
                         select
+                            master_plan.tgl_plan,
                             master_plan.id_ws,
                             master_plan.sewing_line,
                             count(output_rfts_packing.id) as progress
@@ -102,14 +103,15 @@ class OrderList extends Component
                             output_rfts_packing on output_rfts_packing.master_plan_id = master_plan.id
                         where
                             ".(Auth::user()->Groupp != 'ALLSEWING' ? "master_plan.sewing_line = '".strtoupper(Auth::user()->username)."' AND" : "")."
-                            master_plan.tgl_plan = '".$this->date."' AND
                             master_plan.cancel = 'N'
                         group by
+                            master_plan.tgl_plan,
                             master_plan.id_ws,
                             master_plan.sewing_line
                     ) output"
                 ),
                 function ($join) {
+                    $join->on("output.tgl_plan", "=", "master_plan.tgl_plan");
                     $join->on("output.id_ws", "=", "master_plan.id_ws");
                     $join->on("output.sewing_line", "=", "master_plan.sewing_line");
                 }
@@ -118,6 +120,7 @@ class OrderList extends Component
                 DB::raw("
                     (
                         select
+                            master_plan.tgl_plan,
                             master_plan.id_ws,
                             master_plan.sewing_line,
                             count(output_rfts.id) as progress
@@ -127,14 +130,15 @@ class OrderList extends Component
                             output_rfts on output_rfts.master_plan_id = master_plan.id
                         where
                             ".(Auth::user()->Groupp != 'ALLSEWING' ? "master_plan.sewing_line = '".strtoupper(Auth::user()->username)."' AND" : "")."
-                            master_plan.tgl_plan = '".$this->date."' AND
                             master_plan.cancel = 'N'
                         group by
+                            master_plan.tgl_plan,
                             master_plan.id_ws,
                             master_plan.sewing_line
                     ) output_endline"
                 ),
                 function ($join) {
+                    $join->on("output_endline.tgl_plan", "=", "master_plan.tgl_plan");
                     $join->on("output_endline.id_ws", "=", "master_plan.id_ws");
                     $join->on("output_endline.sewing_line", "=", "master_plan.sewing_line");
                 }
@@ -145,7 +149,7 @@ class OrderList extends Component
         $this->orders = $orderSql
             ->where('so_det.cancel', 'N')
             ->where('master_plan.cancel', 'N')
-            ->where('master_plan.tgl_plan', $this->date)
+            ->whereRaw('(master_plan.tgl_plan = "'.$this->date.'" OR (output.progress < output_endline.progress AND (master_plan.tgl_plan BETWEEN CURRENT_DATE - 7 AND CURRENT_DATE)))')
             ->whereRaw("
                 (
                     act_costing.kpno LIKE '%".$this->search."%'
