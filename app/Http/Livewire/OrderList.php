@@ -149,7 +149,7 @@ class OrderList extends Component
         $this->orders = $orderSql
             ->where('so_det.cancel', 'N')
             ->where('master_plan.cancel', 'N')
-            ->whereRaw('(master_plan.tgl_plan = "'.$this->date.'" OR (output.progress < output_endline.progress AND (master_plan.tgl_plan BETWEEN CURRENT_DATE - 7 AND CURRENT_DATE)))')
+            ->whereRaw('(master_plan.tgl_plan = "'.$this->date.'" OR (output.progress < output_endline.progress AND (master_plan.tgl_plan BETWEEN CURRENT_DATE - 2 AND CURRENT_DATE)))')
             ->whereRaw("
                 (
                     act_costing.kpno LIKE '%".$this->search."%'
