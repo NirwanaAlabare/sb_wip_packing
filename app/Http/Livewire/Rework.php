@@ -157,7 +157,7 @@ class Rework extends Component
                 $createRework = ReworkModel::create([
                     "defect_id" => $defect->id,
                     "status" => "NORMAL",
-                    "created_by" => Auth::user()->id
+                    "created_by" => Auth::user()->username
                 ]);
 
                 // add rft array
@@ -166,7 +166,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
-                    "created_by" => Auth::user()->id,
+                    "created_by" => Auth::user()->username,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -178,7 +178,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
-                    "created_by" => Auth::user()->id,
+                    "created_by" => Auth::user()->username,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -233,7 +233,7 @@ class Rework extends Component
                 $createRework = ReworkModel::create([
                     "defect_id" => $defect->id,
                     "status" => "NORMAL",
-                    "created_by" => Auth::user()->id
+                    "created_by" => Auth::user()->username
                 ]);
 
                 // add defect id array
@@ -245,7 +245,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
-                    "created_by" => Auth::user()->id,
+                    "created_by" => Auth::user()->username,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -257,7 +257,7 @@ class Rework extends Component
                     'so_det_id' => $defect->so_det_id,
                     "status" => "REWORK",
                     "rework_id" => $createRework->id,
-                    "created_by" => Auth::user()->id,
+                    "created_by" => Auth::user()->username,
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]);
@@ -292,7 +292,7 @@ class Rework extends Component
             $createRework = ReworkModel::create([
                 "defect_id" => $defectId,
                 "status" => "NORMAL",
-                "created_by" => Auth::user()->id
+                "created_by" => Auth::user()->username
             ]);
 
             // remove from defect
@@ -308,7 +308,7 @@ class Rework extends Component
                 'so_det_id' => $getDefect->so_det_id,
                 "status" => "REWORK",
                 "rework_id" => $createRework->id,
-                "created_by" => Auth::user()->id
+                "created_by" => Auth::user()->username
             ]);
 
             // add to rft
@@ -318,7 +318,7 @@ class Rework extends Component
                 'so_det_id' => $getDefect->so_det_id,
                 "status" => "REWORK",
                 "rework_id" => $createRework->id,
-                "created_by" => Auth::user()->id
+                "created_by" => Auth::user()->username
             ]);
 
             if ($createRework && $updateDefect && $createRft) {

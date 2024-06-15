@@ -107,7 +107,7 @@ class Reject extends Component
                     'master_plan_id' => $this->orderInfo->id,
                     'so_det_id' => $this->sizeInput,
                     'status' => 'NORMAL',
-                    'created_by' => Auth::user()->id,
+                    'created_by' => Auth::user()->username,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
