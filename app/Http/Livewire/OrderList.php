@@ -70,6 +70,15 @@ class OrderList extends Component
 
     public function render()
     {
+        $masterPlanBefore = MasterPlan::select("id")->where("sewing_line", strtoupper(Auth::user()->username))->where("master_plan.cancel", "N")->where("tgl_plan", "<", $this->date)->orderBy("tgl_plan", "desc")->limit(3)->get();
+
+        $additionalQuery = "";
+        if ($masterPlanBefore) {
+            $masterPlanBeforeIds = implode("' , '",$masterPlanBefore->pluck("id")->toArray());
+
+            $additionalQuery = "OR master_plan.id IN ('".$masterPlanBeforeIds."')";
+        }
+
         $orderSql = DB::table('master_plan')
             ->selectRaw("
                 MIN(master_plan.id) as id,
@@ -175,6 +184,7 @@ class OrderList extends Component
                     AND
                     REPLACE(master_plan.sewing_line, '_', ' ') LIKE '%".$this->filterLine."%'
                 )
+                ".$additionalQuery."
             ")
             ->groupBy(
                 'master_plan.id_ws',
@@ -188,6 +198,7 @@ class OrderList extends Component
                 'output_endline.progress',
                 'so.id'
             )
+            ->orderBy('master_plan.tgl_plan', 'desc')
             ->orderBy('master_plan.sewing_line', 'asc')
             ->orderBy('mastersupplier.supplier', 'asc')
             ->orderBy('act_costing.kpno', 'asc')
