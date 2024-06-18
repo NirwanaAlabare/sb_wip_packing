@@ -100,9 +100,9 @@ class Rft extends Component
         $balanceOutputData = $endlineOutputData-$currentOutputData;
 
         $additionalMessage = $balanceOutputData < $this->outputInput && $balanceOutputData > 0 ? "<b>".($this->outputInput - $balanceOutputData)."</b> output melebihi batas input." : null;
-        if ($balanceOutputData < $this->outputInput) {
-            $this->outputInput = $balanceOutputData;
-        }
+        // if ($balanceOutputData < $this->outputInput) {
+        //     $this->outputInput = $balanceOutputData;
+        // }
 
         $insertData = [];
         $insertDataNds = [];
