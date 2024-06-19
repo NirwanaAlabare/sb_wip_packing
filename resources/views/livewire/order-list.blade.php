@@ -5,7 +5,13 @@
             <input type="text" class="form-control" wire:model='search' placeholder="Search Order...">
             <button class="btn btn-success" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
         </div>
-        <button class="btn btn-outline-success mb-3" type="button" wire:click="preSubmitFilter"><i class="fa-regular fa-filter"></i></button>
+        <button class="btn btn-outline-success mb-3" type="button" wire:click="preSubmitFilter" id="filter-button"><i class="fa-regular fa-filter"></i></button>
+    </div>
+
+    <div class="loading-container-fullscreen hidden" id="loading-order-list">
+        <div class="loading-container">
+            <div class="loading"></div>
+        </div>
     </div>
 
     <div class="w-100" wire:loading wire:target='search, date, filterLine, filterBuyer, filterWs, filterProductType, filterStyle'>
@@ -95,7 +101,7 @@
                             <div wire:ignore id="select-line-container">
                                 <select class="form-select @error('filterLine') is-invalid @enderror" id="line-select2" wire:model='filterLine'>
                                     <option value="" selected>Select Line</option>
-                                    @foreach ($orders->groupBy('sewing_line') as $order)
+                                    @foreach ($orderFilters->groupBy('sewing_line') as $order)
                                         <option value="{{ $order->first()->sewing_line }}">
                                             {{ strtoupper($order->first()->sewing_line) }}
                                         </option>
@@ -108,7 +114,7 @@
                             <div wire:ignore id="select-buyer-container">
                                 <select class="form-select @error('filterBuyer') is-invalid @enderror" id="buyer-select2" wire:model='filterBuyer'>
                                     <option value="" selected>Select Buyer</option>
-                                    @foreach ($orders->groupBy('buyer_name') as $order)
+                                    @foreach ($orderFilters->groupBy('buyer_name') as $order)
                                         <option value="{{ $order->first()->buyer_name }}">
                                             {{ strtoupper($order->first()->buyer_name) }}
                                         </option>
@@ -121,7 +127,7 @@
                             <div wire:ignore id="select-ws-container">
                                 <select class="form-select @error('filterWs') is-invalid @enderror" id="ws-select2" wire:model='filterWs'>
                                     <option value="" selected>Select No. WS</option>
-                                    @foreach ($orders->groupBy('ws_number') as $order)
+                                    @foreach ($orderFilters->groupBy('ws_number') as $order)
                                         <option value="{{ $order->first()->ws_number }}">
                                             {{ strtoupper($order->first()->ws_number) }}
                                         </option>
@@ -134,7 +140,7 @@
                             <div wire:ignore id="select-product-type-container">
                                 <select class="form-select @error('filterProductType') is-invalid @enderror" id="product-type-select2" wire:model='filterProductType'>
                                     <option value="" selected>Select Product Type</option>
-                                    @foreach ($orders->groupBy('product_type') as $order)
+                                    @foreach ($orderFilters->groupBy('product_type') as $order)
                                         <option value="{{ $order->first()->product_type }}">
                                             {{ strtoupper($order->first()->product_type) }}
                                         </option>
@@ -147,7 +153,7 @@
                             <div wire:ignore id="select-style-container">
                                 <select class="form-select @error('filterStyle') is-invalid @enderror" id="style-select2" wire:model='filterStyle'>
                                     <option value="" selected>Select Style</option>
-                                    @foreach ($orders->groupBy('style_name') as $order)
+                                    @foreach ($orderFilters->groupBy('style_name') as $order)
                                         <option value="{{ $order->first()->style_name }}">
                                             {{ strtoupper($order->first()->style_name) }}
                                         </option>
@@ -169,7 +175,15 @@
 
 @push('scripts')
     <script>
+        Livewire.emit("loadingStart");
+
         document.addEventListener("DOMContentLoaded", () => {
+            $("#loading-order-list").addClass("hidden");
+
+            $('#filter-button').on('click', function (e) {
+                Livewire.emit("loadingStart");
+            });
+
             // Line
             $('#line-select2').select2({
                 theme: "bootstrap-5",
@@ -179,6 +193,7 @@
             });
 
             $('#line-select2').on('change', function (e) {
+                Livewire.emit("loadingStart");
                 var filterLine = $('#line-select2').select2("val");
                 @this.set('filterLine', filterLine);
             });

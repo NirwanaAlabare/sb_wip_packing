@@ -363,6 +363,10 @@
         });
 
         Livewire.on('loadingStart', () => {
+            if (document.getElementById('loading-order-list')) {
+                $('#loading-order-list').removeClass('hidden');
+                $('#content-order-list').addClass('hidden');
+            }
             if (document.getElementById('loading-rft')) {
                 $('#loading-rft').removeClass('hidden');
                 $('#content-rft').addClass('hidden');

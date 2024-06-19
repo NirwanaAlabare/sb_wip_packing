@@ -56,10 +56,11 @@ class ProductionController extends Controller
             ->leftJoin('masterproduct', 'masterproduct.id', '=', 'act_costing.id_product')
             ->where('so_det.cancel', 'N')
             ->where('master_plan.cancel', 'N');
-            if (Auth::user()->Groupp != "ALLSEWING") {
-                $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
-            }
+            // if (Auth::user()->Groupp != "ALLSEWING") {
+            //     $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
+            // }
         $orderWsDetails = $orderWsDetailsSql->where('act_costing.kpno', $orderInfo->ws_number)
+            ->where('master_plan.sewing_line', str_replace(" ", "_", $orderInfo->sewing_line))
             ->where('master_plan.tgl_plan', $orderInfo->tgl_plan)
             ->groupBy(
                 'master_plan.id',

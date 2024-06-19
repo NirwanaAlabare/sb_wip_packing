@@ -119,9 +119,9 @@ class ProductionPanel extends Component
             ->leftJoin('so', 'so.id_cost', '=', 'act_costing.id')
             ->leftJoin('so_det', 'so_det.id_so', '=', 'so.id')
             ->leftJoin('mastersupplier', 'mastersupplier.id_supplier', '=', 'act_costing.id_buyer');
-            if (Auth::user()->Groupp != "ALLSEWING") {
-                $orderWsDetailSizesSql->where('master_plan.sewing_line', Auth::user()->username);
-            }
+            // if (Auth::user()->Groupp != "ALLSEWING") {
+            //     $orderWsDetailSizesSql->where('master_plan.sewing_line', Auth::user()->username);
+            // }
         $this->orderWsDetailSizes = $orderWsDetailSizesSql
             ->where('act_costing.kpno', $this->orderInfo->ws_number)
             ->where('so_det.color', $this->selectedColorName)
@@ -388,9 +388,9 @@ class ProductionPanel extends Component
             ->leftJoin('master_size_new', 'master_size_new.size', '=', 'so_det.size')
             ->leftJoin('masterproduct', 'masterproduct.id', '=', 'act_costing.id_product')
             ->where('so_det.cancel', 'N');
-            if (Auth::user()->Groupp != "ALLSEWING") {
-                $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
-            }
+            // if (Auth::user()->Groupp != "ALLSEWING") {
+            //     $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
+            // }
         $this->orderWsDetails = $orderWsDetailsSql
             ->where('act_costing.kpno', $this->orderInfo->ws_number)
             ->where('master_plan.tgl_plan', $this->orderInfo->tgl_plan)
@@ -411,9 +411,9 @@ class ProductionPanel extends Component
             ->leftJoin('so', 'so.id_cost', '=', 'act_costing.id')
             ->leftJoin('so_det', 'so_det.id_so', '=', 'so.id')
             ->leftJoin('mastersupplier', 'mastersupplier.id_supplier', '=', 'act_costing.id_buyer');
-            if (Auth::user()->Groupp != "ALLSEWING") {
-                $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
-            }
+            // if (Auth::user()->Groupp != "ALLSEWING") {
+            //     $orderWsDetailsSql->where('master_plan.sewing_line', Auth::user()->username);
+            // }
         $this->orderWsDetailSizes = $orderWsDetailSizesSql->where('act_costing.kpno', $this->orderInfo->ws_number)
             ->where('so_det.color', $this->selectedColorName)
             ->groupBy('so_det.size')
