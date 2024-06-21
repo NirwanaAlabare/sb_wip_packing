@@ -350,6 +350,7 @@ class ProductionPanel extends Component
         $this->orderInfo = MasterPlan::selectRaw("
                 master_plan.id as id,
                 master_plan.tgl_plan as tgl_plan,
+                REPLACE(master_plan.sewing_line, '_', ' ') as sewing_line,
                 master_plan.id_ws as id_ws,
                 act_costing.kpno as ws_number,
                 act_costing.styleno as style_name,
@@ -411,8 +412,6 @@ class ProductionPanel extends Component
             ->groupBy('so_det.size')
             ->orderBy('so_det_id')
             ->get();
-
-        $this->orderDate = $this->orderInfo->tgl_plan;
 
         session()->put("orderInfo", $this->orderInfo);
         session()->put("orderWsDetails", $this->orderWsDetails);
