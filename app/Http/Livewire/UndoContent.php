@@ -11,6 +11,7 @@ use App\Models\SignalBit\Defect;
 use App\Models\SignalBit\Reject;
 use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\MasterPlan;
+use App\Models\Nds\OutputPacking;
 
 class UndoContent extends Component
 {
@@ -34,6 +35,7 @@ class UndoContent extends Component
     {
         $restoreData = Undo::selectRaw("*, output_undo_packing.id as undo_id")->leftJoin("master_plan", "master_plan.id", "=", "output_undo_packing.master_plan_id")->where("master_plan.tgl_plan", [$this->dateFrom, $this->dateTo])->get();
         $rft = [];
+        $rftNds = [];
         $defect = [];
         $rework = [];
         $reject = [];
@@ -45,6 +47,17 @@ class UndoContent extends Component
                     "master_plan_id" => $restore->master_plan_id,
                     "so_det_id" => $restore->so_det_id,
                     'status' => 'NORMAL',
+                    "created_by" => Auth::user()->username,
+                    "created_at" => $restore->created_at,
+                    "updated_at" => $restore->updated_at,
+                ]);
+
+                array_push($rftNds, [
+                    "master_plan_id" => $restore->master_plan_id,
+                    "so_det_id" => $restore->so_det_id,
+                    'status' => 'NORMAL',
+                    "sewing_line" => Auth::user()->username,
+                    "created_by" => Auth::user()->username,
                     "created_at" => $restore->created_at,
                     "updated_at" => $restore->updated_at,
                 ]);
@@ -91,6 +104,7 @@ class UndoContent extends Component
 
         if (count($rft) > 0) {
             Rft::insert($rft);
+            OutputPacking::insert($rft);
         }
 
         if (count($defect) > 0) {

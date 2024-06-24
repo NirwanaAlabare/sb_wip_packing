@@ -207,6 +207,7 @@
             });
 
             $('#buyer-select2').on('change', function (e) {
+                Livewire.emit("loadingStart");
                 var filterBuyer = $('#buyer-select2').select2("val");
                 @this.set('filterBuyer', filterBuyer);
             });
@@ -220,6 +221,7 @@
             });
 
             $('#ws-select2').on('change', function (e) {
+                Livewire.emit("loadingStart");
                 var filterWs = $('#ws-select2').select2("val");
                 @this.set('filterWs', filterWs);
             });
@@ -233,6 +235,7 @@
             });
 
             $('#product-type-select2').on('change', function (e) {
+                Livewire.emit("loadingStart");
                 var filterProductType = $('#product-type-select2').select2("val");
                 @this.set('filterProductType', filterProductType);
             });
@@ -246,6 +249,7 @@
             });
 
             $('#style-select2').on('change', function (e) {
+                Livewire.emit("loadingStart");
                 var filterStyle = $('#style-select2').select2("val");
                 @this.set('filterStyle', filterStyle);
             });
@@ -257,6 +261,8 @@
                 $('#product-type-select2').val("").trigger('change');
                 $('#style-select2').val("").trigger('change');
             });
+
+            Livewire.emit("loadingStop");
         })
     </script>
 @endpush
