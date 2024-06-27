@@ -72,7 +72,7 @@ class OrderList extends Component
 
     public function render()
     {
-        $masterPlanBefore = MasterPlan::select("id")->where("sewing_line", strtoupper(Auth::user()->username))->where("master_plan.cancel", "N")->where("tgl_plan", "<=", $this->date)->orderBy("tgl_plan", "desc")->limit(3)->get();
+        $masterPlanBefore = MasterPlan::select("id")->where("sewing_line", strtoupper(Auth::user()->username))->where("master_plan.cancel", "N")->whereBetween("tgl_plan", [date('Y-m-d', strtotime('-3 days', strtotime($this->date))), $this->date])->orderBy("tgl_plan", "desc")->get();
 
         $additionalQuery = "";
         if ($masterPlanBefore) {
@@ -195,7 +195,7 @@ class OrderList extends Component
                     AND
                     CONCAT(masterproduct.product_group, ' - ', masterproduct.product_item) LIKE '%".$this->filterProductType."%'
                     AND
-                    REPLACE(master_plan.sewing_line, '_', ' ') LIKE '%".$this->filterLine."%'
+                    (REPLACE(master_plan.sewing_line, '_', ' ') LIKE '%".$this->filterLine."%' OR master_plan.sewing_line = '".strtoupper(Auth::user()->username)."')
                 )
                 ".$additionalQuery."
             ")
