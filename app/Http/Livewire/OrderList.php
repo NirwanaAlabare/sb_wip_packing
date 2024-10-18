@@ -59,8 +59,6 @@ class OrderList extends Component
         $this->orders = $this->orders->filter(function ($item) {
             return $item['sewing_line'] == $this->filterLine && $item['ws_number'] == $this->filterWs && $item['buyer_name'] == $this->filterBuyer && $item['product_type'] == $this->filterProductType && $item['style_name'] == $this->filterStyle;
         })->values();
-
-        dd($this->orders);
     }
 
     public function setDate($date)

@@ -542,8 +542,9 @@ class ProductionPanel extends Component
         $this->outputDefect = $masterPlan->output_defect ? $masterPlan->output_defect : 0;
         $this->outputRework = $masterPlan->output_rework ? $masterPlan->output_rework : 0;
         $this->outputReject = $masterPlan->output_reject ? $masterPlan->output_reject : 0;
-        $sqlFiltered = Rft::select('id')->where('master_plan_id', $this->orderInfo->id)->where('status', 'NORMAL');
-        $this->outputFiltered = $this->selectedSize == 'all' ? $sqlFiltered->count() : $sqlFiltered->where('so_det_id', $this->selectedSize)->count();
+        $soDet = DB::table('so_det')->where('id', $this->selectedSize)->first();
+        $sqlFiltered = Rft::select('id')->leftJoin('so_det', 'so_det.id', '=', 'output_rfts_packing.so_det_id')->where('master_plan_id', $this->orderInfo->id)->where('status', 'NORMAL');
+        $this->outputFiltered = $this->selectedSize == 'all' ? $sqlFiltered->count() : $sqlFiltered->where('so_det.size', $soDet->size)->count();
 
         // Undo size data
         switch ($this->undoType) {
