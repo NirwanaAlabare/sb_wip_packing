@@ -374,7 +374,10 @@ class ProductionPanel extends Component
             ")
             ->leftJoin('act_costing', 'act_costing.id', '=', 'master_plan.id_ws')
             ->leftJoin('so', 'so.id_cost', '=', 'act_costing.id')
-            ->leftJoin('so_det', 'so_det.id_so', '=', 'so.id')
+            ->join('so_det', function ($join) {
+                $join->on('so_det.id_so', "=", "so.id");
+                $join->on('so_det.color', "=", "master_plan.color");
+            })
             ->leftJoin('mastersupplier', 'mastersupplier.id_supplier', '=', 'act_costing.id_buyer')
             ->leftJoin('master_size_new', 'master_size_new.size', '=', 'so_det.size')
             ->leftJoin('masterproduct', 'masterproduct.id', '=', 'act_costing.id_product')
@@ -392,7 +395,10 @@ class ProductionPanel extends Component
             ")
             ->leftJoin('act_costing', 'act_costing.id', '=', 'master_plan.id_ws')
             ->leftJoin('so', 'so.id_cost', '=', 'act_costing.id')
-            ->leftJoin('so_det', 'so_det.id_so', '=', 'so.id')
+            ->join('so_det', function ($join) {
+                $join->on('so_det.id_so', "=", "so.id");
+                $join->on('so_det.color', "=", "master_plan.color");
+            })
             ->leftJoin('mastersupplier', 'mastersupplier.id_supplier', '=', 'act_costing.id_buyer')
             ->leftJoin('master_size_new', 'master_size_new.size', '=', 'so_det.size')
             ->leftJoin('masterproduct', 'masterproduct.id', '=', 'act_costing.id_product')
@@ -415,7 +421,10 @@ class ProductionPanel extends Component
             ")
             ->leftJoin('act_costing', 'act_costing.id', '=', 'master_plan.id_ws')
             ->leftJoin('so', 'so.id_cost', '=', 'act_costing.id')
-            ->leftJoin('so_det', 'so_det.id_so', '=', 'so.id')
+            ->join('so_det', function ($join) {
+                $join->on('so_det.id_so', "=", "so.id");
+                $join->on('so_det.color', "=", "master_plan.color");
+            })
             ->leftJoin('mastersupplier', 'mastersupplier.id_supplier', '=', 'act_costing.id_buyer')
             ->where('master_plan.sewing_line', str_replace(" ", "_", $this->orderInfo->sewing_line))
             ->where('act_costing.kpno', $this->orderInfo->ws_number)
