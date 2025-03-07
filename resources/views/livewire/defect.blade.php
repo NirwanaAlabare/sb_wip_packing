@@ -55,7 +55,7 @@
                         <div class="d-flex align-items-center gap-3 me-3">
                             <p class="mb-1 fs-5">DEFECT</p>
                             <p class="mb-1 fs-5">:</p>
-                            <p id="defect-qty" class="mb-1 fs-5">{{ $output }}</p>
+                            <p id="defect-qty" class="mb-1 fs-5">{{ $output->count() }}</p>
                         </div>
                         <button class="btn btn-dark" wire:click='clearInput'>
                             <i class="fa-regular fa-rotate-left"></i>
@@ -82,8 +82,9 @@
                         @foreach ($orderWsDetailSizes as $order)
                             <label class="size-input col-md-4">
                                 <input type="radio" name="size-input" id="size-input" value="{{ $order->so_det_id }}"  wire:model.defer='sizeInput'>
-                                <div class="btn btn-defect btn-size w-100 h-100 fs-3 py-auto d-flex justify-content-center align-items-center">
-                                    {{ $order->size }}
+                                <div class="btn btn-defect btn-size w-100 h-100 fs-3 py-auto d-flex flex-column justify-content-center align-items-center">
+                                    <p class="fs-3 mb-0">{{ $order->size }}</p>
+                                    <p class="fs-5 mb-0">{{ $output->where('size', $order->size)->count() }}</p>
                                 </div>
                             </label>
                         @endforeach
@@ -219,7 +220,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" wire:click='submitInput'>Selesai</button>
+                    <button type="button" class="btn btn-sb-secondary" wire:click='submitInput'>Selesai</button>
                 </div>
             </div>
         </div>
@@ -270,7 +271,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" wire:click='submitProductType'>Tambahkan</button>
+                    <button type="button" class="btn btn-sb-secondary" wire:click='submitProductType'>Tambahkan</button>
                 </div>
             </div>
         </div>
@@ -302,7 +303,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" wire:click='submitDefectType'>Tambahkan</button>
+                    <button type="button" class="btn btn-sb-secondary" wire:click='submitDefectType'>Tambahkan</button>
                 </div>
             </div>
         </div>
@@ -334,7 +335,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" wire:click='submitDefectArea'>Tambahkan</button>
+                    <button type="button" class="btn btn-sb-secondary" wire:click='submitDefectArea'>Tambahkan</button>
                 </div>
             </div>
         </div>

@@ -103,9 +103,10 @@ class Defect extends Component
     public function updateOutput()
     {
         $this->output = DefectModel::
+            leftJoin("so_det", "so_det.id", "=", "output_defects_packing.so_det_id")->
             where('master_plan_id', $this->orderInfo->id)->
             where('defect_status', 'defect')->
-            count();
+            get();
     }
 
     public function updatedproductTypeImageAdd()
@@ -243,9 +244,9 @@ class Defect extends Component
         $balanceOutputData = $endlineOutputData-$currentOutputData;
 
         $additionalMessage = $balanceOutputData < $this->outputInput && $balanceOutputData > 0 ? "<b>".($this->outputInput - $balanceOutputData)."</b> output melebihi batas input." : null;
-        if ($balanceOutputData < $this->outputInput) {
-            $this->outputInput = $balanceOutputData;
-        }
+        // if ($balanceOutputData < $this->outputInput) {
+        //     $this->outputInput = $balanceOutputData;
+        // }
 
         if ($this->outputInput > 0) {
             if ($additionalMessage) {
@@ -307,9 +308,10 @@ class Defect extends Component
 
         // Get total output
         $this->output = DefectModel::
+            leftJoin("so_det", "so_det.id", "=", "output_defects_packing.so_det_id")->
             where('master_plan_id', $this->orderInfo->id)->
             where('defect_status', 'defect')->
-            count();
+            get();
 
         // Defect types
         $this->productTypes = ProductType::orderBy('product_type')->get();

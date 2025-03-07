@@ -3,9 +3,9 @@
         <div class="input-group mb-3">
             <input type="hidden" wire:model='date'>
             <input type="text" class="form-control" wire:model='search' placeholder="Search Order...">
-            <button class="btn btn-success" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
+            <button class="btn btn-sb-secondary" type="button" id="button-search-order"><i class="fa-regular fa-magnifying-glass"></i></button>
         </div>
-        <button class="btn btn-outline-success mb-3" type="button" wire:click="preSubmitFilter" id="filter-button"><i class="fa-regular fa-filter"></i></button>
+        <button class="btn btn-sb-secondary-outline mb-3" type="button" wire:click="preSubmitFilter" id="filter-button"><i class="fa-regular fa-filter"></i></button>
     </div>
 
     <div class="loading-container-fullscreen hidden" id="loading-order-list">
@@ -18,7 +18,7 @@
         <div class="loading-container">
             <div class="loading"></div>
         </div>
-        <p class="text-center text-success fw-bold mt-3 mb-0">
+        <p class="text-center text-sb-secondary fw-bold mt-3 mb-0">
             Mohon Tunggu...
         </p>
     </div>
@@ -31,7 +31,7 @@
                 <a href="{{ $this->baseUrl."/production-panel/".$order->id }}" class="order col-md-6 h-100">
                     <div class="card overflow-hidden h-100">
                         @if ($order->plan_date != date('Y-m-d'))
-                            <span class="{{ $this->date < date('Y-m-d') && $order->plan_date < $this->date ? 'bg-defect' : 'bg-success' }} text-light text-center fw-bold p-1 rounded-1" style="position: absolute; width:35%; top:10%; right: -10%; transform:rotate(45deg);">BERLALU</span>
+                            <span class="{{ $this->date < date('Y-m-d') && $order->plan_date < $this->date ? 'bg-defect' : 'bg-sb-secondary' }} text-light text-center fw-bold p-1 rounded-1" style="position: absolute; width:35%; top:10%; right: -10%; transform:rotate(45deg);">BERLALU</span>
                         @endif
                         <div class="card-body justify-content-start">
                             <table class="table table-responsive mb-1">
@@ -75,7 +75,7 @@
                                     @php
                                         $outputProgress = $order->target > 0 ? floatval($order->progress)/floatval($order->target) * 100 : 0;
                                     @endphp
-                                    <div class="progress-bar fw-bold {{ $outputProgress > 100 ? 'bg-rft' : 'bg-success' }}" style="width:{{  $outputProgress }}%">{{ $outputProgress > 100 ? 'TARGET TERLAMPAUI' : '' }}</div>
+                                    <div class="progress-bar fw-bold {{ $outputProgress > 100 ? 'bg-rft' : 'bg-sb-secondary' }}" style="width:{{  $outputProgress }}%">{{ $outputProgress > 100 ? 'TARGET TERLAMPAUI' : '' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
     <div class="modal" tabindex="-1" id="filter-modal" wire:ignore.self>
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-success text-light">
+                <div class="modal-header bg-sb-secondary text-light">
                     <h5 class="modal-title"><i class="fa-regular fa-filter"></i> FILTER</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -168,8 +168,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-regular fa-times"></i> Tutup</button>
-                    <button type="button" class="btn btn-success" wire:click="clearFilter"><i class="fa-regular fa-broom"></i> Bersihkan</button>
-                    {{-- <button type="button" class="btn btn-success" wire:click='submitFilter'><i class="fa-regular fa-check"></i> Terapkan</button> --}}
+                    <button type="button" class="btn btn-sb-secondary" wire:click="clearFilter"><i class="fa-regular fa-broom"></i> Bersihkan</button>
+                    {{-- <button type="button" class="btn btn-sb-secondary" wire:click='submitFilter'><i class="fa-regular fa-check"></i> Terapkan</button> --}}
                 </div>
             </div>
         </div>
