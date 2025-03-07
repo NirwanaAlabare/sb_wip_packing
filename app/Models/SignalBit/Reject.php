@@ -18,6 +18,13 @@ class Reject extends Model
         'master_plan_id',
         'so_det_id',
         'status',
+        'defect_id',
+        'reject_type_id',
+        'reject_area_id',
+        'reject_area_x',
+        'reject_area_y',
+        'reject_status',
+        'created_by',
         'created_at',
         'updated_at',
     ];
@@ -25,6 +32,21 @@ class Reject extends Model
     public function masterPlan()
     {
         return $this->belongsTo(MasterPlan::class, 'master_plan_id', 'id');
+    }
+
+    public function defect()
+    {
+        return $this->hasOne(Defect::class, 'id', 'defect_id');
+    }
+
+    public function defectType()
+    {
+        return $this->belongsTo(DefectType::class, 'reject_type_id', 'id');
+    }
+
+    public function defectArea()
+    {
+        return $this->belongsTo(DefectArea::class, 'reject_area_id', 'id');
     }
 
     public function undo()

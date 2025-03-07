@@ -75,7 +75,7 @@
                                         <p class="text-center fs-3 mt-auto mb-auto">{{ $outputFiltered }}</p>
                                     </div>
                                 </div>
-                                <button type="button" class="reset multi-item lower btn btn-pale h-50" wire:click="preSubmitUndo('rft')">
+                                <button type="button" class="reset multi-item lower btn btn-pale h-50" wire:click="preSubmitUndo('rft')" >
                                     <i class="fa-regular fa-rotate-left fa-2xl"></i>
                                 </button>
                             </div>
@@ -99,7 +99,7 @@
                                         <p class="mb-0"><i class="fa-regular fa-clock-rotate-left fa-xl"></i></p>
                                     </div>
                                 </button>
-                                <button type="button" class="reset multi-item lower btn btn-pale h-50" wire:click="preSubmitUndo('defect')">
+                                <button type="button" class="reset multi-item lower btn btn-pale h-50" wire:click="preSubmitUndo('defect')" >
                                     <div class="d-flex flex-column justify-content-center align-items-center w-100 h-100">
                                         <p class="mb-1">UNDO</p>
                                         <p class="mb-0"><i class="fa-regular fa-rotate-left fa-xl"></i></p>
@@ -119,7 +119,7 @@
                             <p class="text-light fs-1">{{ $outputReject }}</p>
                         </div>
                         <div class="card-custom-footer bg-light w-25 h-100">
-                            <button class="reset single-item btn btn-pale w-100 h-100" wire:click="preSubmitUndo('reject')">
+                            <button class="reset single-item btn btn-pale w-100 h-100" wire:click="preSubmitUndo('reject')" >
                                 <i class="fa-regular fa-rotate-left fa-2xl"></i>
                             </button>
                         </div>
@@ -165,11 +165,9 @@
         @endif
 
         {{-- Reject --}}
-        {{-- @if ($reject) --}}
-        <div class="{{ $reject ? '' : 'd-none' }}">
+        @if ($reject)
             @livewire('reject', ["orderWsDetailSizes" => $orderWsDetailSizes])
-        </div>
-        {{-- @endif --}}
+        @endif
 
         {{-- Rework --}}
         @if ($rework)
@@ -248,7 +246,7 @@
                 </div>
                 <div class="modal-footer">
                   {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="$emit('hideModal', 'undo')">Close</button> --}}
-                  <button type="button" class="btn btn-dark" wire:click='submitUndo()'>UNDO</button>
+                  <button type="button" class="btn btn-dark" id="submit-undo" {{-- wire:click='submitUndo()' --}}>UNDO</button>
                 </div>
               </div>
             </div>
@@ -263,7 +261,7 @@
 
     @if (!$panels)
         {{-- Back --}}
-        <a wire:click="toProductionPanel" class="back bg-success text-light text-center w-auto">
+        <a wire:click="toProductionPanel" class="back bg-sb-secondary text-light text-center w-auto">
             <i class="fa-regular fa-reply"></i>
         </a>
     @endif
@@ -272,42 +270,12 @@
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            restrictYesterdayMasterPlan();
-
             @this.updateOrder();
-        });
-
-        window.addEventListener("focus", () => {
-            restrictYesterdayMasterPlan();
         });
 
         // Pad 2 Digits
         function pad(n) {
             return n < 10 ? '0' + n : n
-        }
-
-        // Restrict Yesterday Master Plan
-        function restrictYesterdayMasterPlan() {
-            let date = new Date();
-            let day = pad(date.getDate());
-            let month = pad(date.getMonth() + 1);
-            let year = date.getFullYear();
-
-            // This arrangement can be altered based on how we want the date's format to appear.
-            let currentDate = `${year}-${month}-${day}`;
-
-            console.log(@this.orderDate, currentDate);
-
-            if (@this.orderDate != currentDate) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Anda sedang mengakses Master Plan yang sudah berlalu',
-                    html: `Master Plan yang anda akses berasal dari tanggal <br> <b>'`+ document.getElementById('tanggal').value +`'</b> <br> `,
-                    showConfirmButton: true,
-                    confirmButtonText: 'Oke',
-                    confirmButtonColor: '#6531a0'
-                });
-            }
         }
 
         $('#product-color').on('change', function (e) {
@@ -322,5 +290,29 @@
 
             @this.updateOrder();
         });
+
+        $('#submit-undo').on('click', function (e) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Konfirmasi',
+                html: `Yakin akan UNDO <b>'`+$('#undo-qty').val()+`'</b> output dengan size <b>'`+$("#undo-size option:selected").text()+`'</b>`,
+                showConfirmButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'UNDO',
+                confirmButtonColor: '#ff971f',
+                denyButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.submitUndo();
+                } else if (result.isDenied) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'UNDO dibatalkan',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: '#ff971f',
+                    });
+                }
+            });
+        })
     </script>
 @endpush

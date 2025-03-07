@@ -26,9 +26,9 @@ function showDate() {
     if (document.getElementById("tanggal") && (document.getElementById("tanggal").value == "" || document.getElementById("tanggal").value == null)) {
         let date = new Date();
 
-            let dateFormat = setDateFormat(date);
+        let dateFormat = setDateFormat(date);
 
-            document.getElementById("tanggal").value = dateFormat;
+        document.getElementById("tanggal").value = dateFormat;
     }
 }
 
@@ -148,15 +148,6 @@ function logout(url) {
     });
 }
 
-// filter modal
-function showFilterModal() {
-    $("#filter-modal").modal("show");
-}
-
-function hideFilterModal() {
-    $("#filter-modal").modal("hide");
-}
-
 // defect modal
 function showDefectModal() {
     $("#defect-modal").modal("show");
@@ -164,6 +155,15 @@ function showDefectModal() {
 
 function hideDefectModal() {
     $("#defect-modal").modal("hide");
+}
+
+// reject modal
+function showRejectModal() {
+    $("#reject-modal").modal("show");
+}
+
+function hideRejectModal() {
+    $("#reject-modal").modal("hide");
 }
 
 // undo modal
@@ -261,6 +261,70 @@ function reworkConfirmation() {
                 title: 'REWORK Canceled',
                 confirmButtonText: 'Ok',
                 confirmButtonColor: '#447efa',
+            })
+        }
+    });
+}
+
+// mass reject modal
+function showMassRejectModal() {
+    $("#mass-reject-modal").modal("show");
+}
+
+function hideMassRejectModal() {
+    $("#mass-reject-modal").modal("hide");
+}
+
+// all reject modal
+function showAllRejectModal() {
+    $("#all-reject-modal").modal("show");
+}
+
+function hideAllRejectModal() {
+    $("#all-reject-modal").modal("hide");
+}
+
+// reject
+function rejectConfirmation() {
+    Swal.fire({
+        icon: 'info',
+        title: 'REJECT this defect?',
+        html: `<table class="table text-start w-auto mx-auto">
+                    <tr>
+                        <td>ID<td>
+                        <td>:<td>
+                        <td>?<td>
+                    <tr>
+                    <tr>
+                        <td>Size<td>
+                        <td>:<td>
+                        <td>?<td>
+                    <tr>
+                    <tr>
+                        <td>Defect Type<td>
+                        <td>:<td>
+                        <td>?<td>
+                    <tr>
+                    <tr>
+                        <td>Defect Area<td>
+                        <td>:<td>
+                        <td>?<td>
+                    <tr>
+                </table>`,
+        showConfirmButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Reject',
+        confirmButtonColor: '#fa4456',
+        denyButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.reload;
+        } else if (result.isDenied) {
+            Swal.fire({
+                icon: 'info',
+                title: 'REWORK Canceled',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#fa4456',
             })
         }
     });
@@ -502,6 +566,34 @@ function hideSelectDefectArea() {
     selectDefectArea.style.alignItems = null;
 }
 
+// Select Reject Area
+function showSelectRejectArea(rejectAreaImage) {
+    document.body.style.maxHeight = '100%';
+    document.body.style.overflow = 'hidden';
+
+    let rejectAreaImageElement = document.getElementById('reject-area-img');
+    rejectAreaImageElement.src = 'http://10.10.5.62:8080/erp/pages/prod_new/upload_files/'+rejectAreaImage;
+
+    let selectRejectArea = document.getElementById('select-reject-area');
+    selectRejectArea.style.display = 'flex';
+    selectRejectArea.style.flexDirection = 'column';
+    selectRejectArea.style.alignItems = 'center';
+}
+
+function hideSelectRejectArea() {
+    document.body.style.maxHeight = null;
+    document.body.style.overflow = null;
+
+    let rejectAreaImageElement = document.getElementById('reject-area-img');
+    rejectAreaImageElement.src = '';
+
+    let selectRejectArea = document.getElementById('select-reject-area');
+    selectRejectArea.style.display = 'none';
+    selectRejectArea.style.flexDirection = null;
+    selectRejectArea.style.justifyContent = null;
+    selectRejectArea.style.alignItems = null;
+}
+
 // Show Defect Area Image
 function showDefectAreaImage(defectAreaImage) {
     document.body.style.maxHeight = '100%';
@@ -539,15 +631,17 @@ function clearOutputInputJs() {
 
 // Reminder
 function showReminder(hoursminutes) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Reminder',
-        html: 'Waktu saat ini : <b>'+hoursminutes+'</b><br class="mb-3">Harap sempatkan untuk menginput data di setiap jam jika memungkinkan<br class="mb-3"><small>Jika ada kendala dalam penggunaan aplikasi tolong di infokan</small>',
-        showConfirmButton: true,
-        showDenyButton: false,
-        confirmButtonText: 'Oke',
-        confirmButtonColor: '#6531a0',
-    });
+    if (!swal.isVisible()) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Reminder',
+            html: 'Waktu saat ini : <b>'+hoursminutes+'</b><br class="mb-3">Harap sempatkan untuk menginput data di setiap jam jika memungkinkan<br class="mb-3"><small>Jika ada kendala dalam penggunaan aplikasi tolong di infokan</small>',
+            showConfirmButton: true,
+            showDenyButton: false,
+            confirmButtonText: 'Oke',
+            confirmButtonColor: '#6531a0',
+        });
+    }
 }
 
 if (document.getElementById("alert-sound")) {
