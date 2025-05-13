@@ -24,8 +24,11 @@ class Defect extends Model
         'defect_area_y',
         'defect_status',
         'status',
+        'created_by',
+        'reworked_by',
         'created_at',
         'updated_at',
+        'reworked_at',
     ];
 
     public function masterPlan()

@@ -186,7 +186,9 @@ class Rework extends Component
 
             // update defect
             $defectSql = Defect::where('master_plan_id', $this->orderInfo->id)->update([
-                "defect_status" => "reworked"
+                "defect_status" => "reworked",
+                "reworked_by" => Auth::user()->username,
+                "reworked_at" => Carbon::now(),
             ]);
 
             // create rft
@@ -264,7 +266,9 @@ class Rework extends Component
             }
             // update defect
             $defectSql = Defect::whereIn('id', $defectIds)->update([
-                "defect_status" => "reworked"
+                "defect_status" => "reworked",
+                "reworked_by" => Auth::user()->username,
+                "reworked_at" => Carbon::now(),
             ]);
 
             // create rft
@@ -299,7 +303,9 @@ class Rework extends Component
             $defect = Defect::where('id', $defectId);
             $getDefect = $defect->first();
             $updateDefect = $defect->update([
-                "defect_status" => "reworked"
+                "defect_status" => "reworked",
+                "reworked_by" => Auth::user()->username,
+                "reworked_at" => Carbon::now(),
             ]);
 
             // add to rft
@@ -339,7 +345,9 @@ class Rework extends Component
         $defect = Defect::where('id', $defectId);
         $getDefect = $defect->first();
         $updateDefect = $defect->update([
-            "defect_status" => "defect"
+            "defect_status" => "defect",
+            "reworked_by" => null,
+            "reworked_at" => null
         ]);
 
         // delete from rft
