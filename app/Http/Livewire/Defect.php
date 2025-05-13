@@ -102,11 +102,7 @@ class Defect extends Component
 
     public function updateOutput()
     {
-        $this->output = DefectModel::
-            leftJoin("so_det", "so_det.id", "=", "output_defects_packing.so_det_id")->
-            where('master_plan_id', $this->orderInfo->id)->
-            where('defect_status', 'defect')->
-            get();
+        $this->output = collect(DB::select("select output_defects_packing.*, so_det.size, COUNT(output_defects_packing.id) output from `output_defects_packing` left join `so_det` on `so_det`.`id` = `output_defects_packing`.`so_det_id` where `master_plan_id` = '".$this->orderInfo->id."' and `status` = 'NORMAL' group by so_det.id"));
     }
 
     public function updatedproductTypeImageAdd()
@@ -307,11 +303,7 @@ class Defect extends Component
         $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
 
         // Get total output
-        $this->output = DefectModel::
-            leftJoin("so_det", "so_det.id", "=", "output_defects_packing.so_det_id")->
-            where('master_plan_id', $this->orderInfo->id)->
-            where('defect_status', 'defect')->
-            get();
+        $this->output = collect(DB::select("select output_defects_packing.*, so_det.size, COUNT(output_defects_packing.id) output from `output_defects_packing` left join `so_det` on `so_det`.`id` = `output_defects_packing`.`so_det_id` where `master_plan_id` = '".$this->orderInfo->id."' and `defect_status` = 'defect' group by so_det.id"));
 
         // Defect types
         $this->productTypes = ProductType::orderBy('product_type')->get();
