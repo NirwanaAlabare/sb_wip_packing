@@ -48,6 +48,8 @@ class Rework extends Component
 
     public $info;
 
+    public $rework;
+
     protected $listeners = [
         'submitRework' => 'submitRework',
         'submitAllRework' => 'submitAllRework',
@@ -430,6 +432,16 @@ class Rework extends Component
             where('output_defects_packing.defect_type_id', $this->massDefectType)->
             where('output_defects_packing.defect_area_id', $this->massDefectArea)->
             groupBy('output_defects_packing.so_det_id', 'so_det.size')->get();
+
+        $this->rework = DB::
+            connection('mysql_sb')->
+            table('output_defects')->
+            selectRaw('output_defects.*, so_det.size')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects.so_det_id')->
+            where('master_plan_id', $this->orderInfo->id)->
+            where('defect_status', 'reworked')->
+            whereRaw("DATE(updated_at) = '".date('Y-m-d')."'")->
+            get();
 
         return view('livewire.rework' , ['defects' => $defects, 'reworks' => $reworks, 'allDefectList' => $allDefectList]);
     }

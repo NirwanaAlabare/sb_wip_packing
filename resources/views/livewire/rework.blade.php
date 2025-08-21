@@ -11,6 +11,26 @@
     <div class="production-input row row-gap-3" id="content-rework">
         <div class="col-md-12">
             <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-evenly gap-3" style="max-width:100%; overflow: auto;">
+                        @foreach ($orderWsDetailSizes->groupBy("size") as $key => $order)
+                            <div class="w-auto">
+                                <div class="card w-100">
+                                    <div class="card-header bg-rework text-white">
+                                        <p class="fs-6 text-center mb-0">{{ $key }}</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="fs-6 text-center mb-0">{{ $rework->where('size', $key)->count() }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
                 <div class="card-header align-items-center bg-rework text-light">
                     <p class="mb-0 fs-5">Defect List</p>
                 </div>
