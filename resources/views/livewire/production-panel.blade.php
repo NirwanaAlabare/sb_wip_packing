@@ -276,7 +276,7 @@
         window.addEventListener("focus", () => {
             Livewire.emit('updateOrder');
 
-            restrictYesterdayMasterPlan();
+            // restrictYesterdayMasterPlan();
         });
 
         // Pad 2 Digits
