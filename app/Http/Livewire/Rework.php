@@ -435,9 +435,9 @@ class Rework extends Component
 
         $this->rework = DB::
             connection('mysql_sb')->
-            table('output_defects')->
-            selectRaw('output_defects.*, so_det.size')->
-            leftJoin('so_det', 'so_det.id', '=', 'output_defects.so_det_id')->
+            table('output_defects_packing')->
+            selectRaw('output_defects_packing.*, so_det.size')->
+            leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
             where('master_plan_id', $this->orderInfo->id)->
             where('defect_status', 'reworked')->
             whereRaw("DATE(updated_at) = '".date('Y-m-d')."'")->
