@@ -165,14 +165,14 @@
         @endif
 
         {{-- Reject --}}
-        @if ($reject)
+        <div class="{{ $reject ? '' : 'd-none' }}">
             @livewire('reject', ["orderWsDetailSizes" => $orderWsDetailSizes])
-        @endif
+        </div>
 
         {{-- Rework --}}
-        @if ($rework)
+        <div class="{{ $rework ? '' : 'd-none' }}">
             @livewire('rework', ["orderWsDetailSizes" => $orderWsDetailSizes])
-        @endif
+        </div>
 
         {{-- Undo --}}
         <div class="modal" tabindex="-1" id="undo-modal" wire:ignore.self>

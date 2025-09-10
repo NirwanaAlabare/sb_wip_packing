@@ -556,7 +556,6 @@
             });
 
             Livewire.on('clearSelectRejectAreaPoint', () => {
-                $('#product-type-select2').val("").trigger('change');
                 $('#reject-type-select2').val("").trigger('change');
                 $('#reject-area-select2').val("").trigger('change');
             });
