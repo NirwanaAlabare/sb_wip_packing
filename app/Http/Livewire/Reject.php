@@ -481,6 +481,7 @@ class Reject extends Component
         $allDefectList = Defect::selectRaw('output_defects_packing.defect_type_id, output_defects_packing.defect_area_id, output_defect_types.defect_type, output_defect_areas.defect_area, count(*) as total')->
             leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
             leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            whereNull('output_defects_packing.kode_numbering')->
             where('output_defects_packing.defect_status', 'defect')->
             where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             whereRaw("
@@ -497,6 +498,7 @@ class Reject extends Component
             leftJoin('so_det', 'so_det.id', '=', 'output_defects_packing.so_det_id')->
             leftJoin('output_defect_areas', 'output_defect_areas.id', '=', 'output_defects_packing.defect_area_id')->
             leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defects_packing.defect_type_id')->
+            whereNull('output_defects_packing.kode_numbering')->
             where('output_defects_packing.defect_status', 'defect')->
             where('output_defects_packing.master_plan_id', $this->orderInfo->id)->
             whereRaw("(
