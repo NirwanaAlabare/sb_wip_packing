@@ -40,7 +40,7 @@
                         <div class="d-flex align-items-center gap-3 me-3">
                             <p class="mb-1 fs-5">REJECT</p>
                             <p class="mb-1 fs-5">:</p>
-                            <p id="reject-qty" class="mb-1 fs-5">{{ $output->count() }}</p>
+                            <p id="reject-qty" class="mb-1 fs-5">{{ $output->sum('output') }}</p>
                         </div>
                         <button class="btn btn-dark" wire:click="$emit('preSubmitUndo', 'reject')">
                             <i class="fa-regular fa-rotate-left"></i>
@@ -66,7 +66,7 @@
                                 <input type="radio" name="size-input" id="size-input" value="{{ $order->so_det_id }}" wire:model.defer='sizeInput'>
                                 <div class="btn btn-reject btn-size w-100 h-100 fs-3 py-auto d-flex flex-column justify-content-center align-items-center">
                                     <p class="fs-3 mb-0">{{ $order->size }}</p>
-                                    <p class="fs-5 mb-0">{{ $output->where('size', $order->size)->count() }}</p>
+                                    <p class="fs-5 mb-0">{{ $output->where('size', $order->size)->sum('output') }}</p>
                                 </div>
                             </label>
                         @endforeach
