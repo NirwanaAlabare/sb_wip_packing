@@ -622,11 +622,13 @@
         }
 
         Livewire.on('loadReworkPageJs', () => {
-            if (document.getElementById('all-defect-area-img')) {
-                let defectAreaImage = document.getElementById('all-defect-area-img');
-                let defectAreaImagePoint = document.getElementsByClassName('all-defect-area-img-point');
+            if (document.getElementById('all-defect-area-img-rework')) {
+                let defectAreaImage = document.getElementById('all-defect-area-img-rework');
+                let defectAreaImagePoint = document.getElementsByClassName('all-defect-area-img-point-rework');
 
                 let rect = defectAreaImage.getBoundingClientRect();
+
+                console.log('rework', defectAreaImage, rect.width, rect.height);
 
                 for(i = 0; i < defectAreaImagePoint.length; i++) {
                     defectAreaImagePoint[i].style.width = 0.03 * rect.width+'px';
@@ -638,11 +640,13 @@
         });
 
         Livewire.on('loadRejectPageJs', () => {
-            if (document.getElementById('all-defect-area-img')) {
-                let defectAreaImage = document.getElementById('all-defect-area-img');
-                let defectAreaImagePoint = document.getElementsByClassName('all-defect-area-img-point');
+            if (document.getElementById('all-defect-area-img-reject')) {
+                let defectAreaImage = document.getElementById('all-defect-area-img-reject');
+                let defectAreaImagePoint = document.getElementsByClassName('all-defect-area-img-point-reject');
 
                 let rect = defectAreaImage.getBoundingClientRect();
+
+                console.log('reject', defectAreaImage, rect.width, rect.height);
 
                 for(i = 0; i < defectAreaImagePoint.length; i++) {
                     defectAreaImagePoint[i].style.width = 0.03 * rect.width+'px';

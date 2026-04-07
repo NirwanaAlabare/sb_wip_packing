@@ -159,6 +159,8 @@ class ProductionPanel extends Component
     {
         $this->panels = false;
         $this->reject = !($this->reject);
+        $this->emitTo('reject','clearInput');
+        $this->emitTo('reject','updateOutput');
         $this->emit('toInputPanel', 'reject');
     }
 
@@ -166,6 +168,7 @@ class ProductionPanel extends Component
     {
         $this->panels = false;
         $this->rework = !($this->rework);
+        $this->emitTo('rework','updateWsDetailSizes');
         $this->emit('toInputPanel', 'rework');
     }
 
