@@ -391,7 +391,7 @@ class Reject extends Component
             }
 
             if ($externalReject > 0) {
-                $this->emit('alert', 'warning', $externalReject." DEFECT masih ada yang di proses MENDING/SPOTCLEANING.");
+                $this->emit('alert', 'warning', $externalReject." DEFECT masih ada yang di proses MENDING/SPOTCLEANING/SHADING.");
             }
         } else {
             $this->emit('alert', 'warning', "Data tidak ditemukan.");
@@ -437,7 +437,7 @@ class Reject extends Component
                     $this->emit('alert', 'error', "Terjadi kesalahan. DEFECT dengan ID : ".$defectId." tidak berhasil di REJECT.");
                 }
             } else {
-                $this->emit('alert', 'error', "DEFECT ini masih di proses MENDING/SPOTCLEANING. DEFECT dengan ID : ".$defectId." tidak berhasil di REJECT.");
+                $this->emit('alert', 'error', "DEFECT ini masih di proses MENDING/SPOTCLEANING/SHADING. DEFECT dengan ID : ".$defectId." tidak berhasil di REJECT.");
             }
         } else {
             $this->emit('alert', 'warning', "Pencegahan data redundant. DEFECT dengan ID : ".$defectId." sudah ada di REJECT.");
