@@ -166,7 +166,36 @@
             location.reload();
         });
         
+        // function confirmRework(id) {
+        //     Swal.fire({
+        //         title: 'Konfirmasi Proses',
+        //         text: 'Apakah Anda yakin ingin memproses defect ini ke tahap Rework?',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#198754',
+        //         cancelButtonColor: '#6c757d',
+        //         confirmButtonText: 'Ya, lanjutkan',
+        //         cancelButtonText: 'Batal'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             Livewire.emit('openDefectModal', id);
+        //         }
+        //     });
+        // }
+
         function confirmRework(id) {
+            Livewire.emit('checkDefectBeforeRework', id);
+        }
+
+        Livewire.on('showError', function (message) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak dapat diproses',
+                text: message
+            });
+        });
+
+        Livewire.on('showConfirmRework', function (id) {
             Swal.fire({
                 title: 'Konfirmasi Proses',
                 text: 'Apakah Anda yakin ingin memproses defect ini ke tahap Rework?',
@@ -181,6 +210,6 @@
                     Livewire.emit('openDefectModal', id);
                 }
             });
-        }
+        });
     </script>
 @endpush

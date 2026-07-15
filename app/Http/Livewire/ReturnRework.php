@@ -52,7 +52,8 @@ class ReturnRework extends Component
 
     protected $listeners = [
         'hideDefectAreaImageClear' => 'hideDefectAreaImage',
-        'openDefectModal' => 'openDefectModal'
+        'openDefectModal' => 'openDefectModal',
+        'checkDefectBeforeRework' => 'checkDefectBeforeRework'
     ];
 
     public function loadReworkPage()
@@ -119,6 +120,26 @@ class ReturnRework extends Component
         } else {
             $this->emit('alert', 'error', 'Terjadi kesalahan. Defect gagal diproses ke tahap Rework.');
         }
+    }
+
+    public function checkDefectBeforeRework($id)
+    {
+        $exists = DB::table('output_defect_in_out')
+            ->where('defect_id', $id) 
+            ->where('output_type', 'qc_fns_pck_return')
+            ->where('status', 'reworked')
+            ->exists();
+
+        if (!$exists) {
+            $this->emit(
+                'showError',
+                'Defect harus melalui proses Defect In Out terlebih dahulu sebelum dapat diproses ke Rework.'
+            );
+
+            return;
+        }
+
+        $this->emit('showConfirmRework', $id);
     }
 
     public function render(SessionManager $session)
