@@ -124,19 +124,43 @@ class ReturnRework extends Component
 
     public function checkDefectBeforeRework($id)
     {
-        $exists = DB::table('output_defect_in_out')
-            ->where('defect_id', $id) 
-            ->where('output_type', 'qc_fns_pck_return')
-            ->where('status', 'reworked')
-            ->exists();
+        $data = DB::table('output_defect_packing_po_return as a')
+            ->leftJoin('output_defect_types as b', 'b.id', '=', 'a.defect_type_id')
+            ->where('a.id', $id)
+            ->where('a.defect_status', 'defect')
+            ->select(
+                'a.*',
+                'b.allocation'
+            )
+            ->first();
 
-        if (!$exists) {
+        if (!$data) {
             $this->emit(
                 'showError',
-                'Defect harus melalui proses Defect In Out terlebih dahulu sebelum dapat diproses ke Rework.'
+                'Data defect tidak ditemukan.'
             );
 
             return;
+        }
+
+        // Jika allocation MENDING atau SPOTCLEANING,
+        // wajib melalui proses Defect In Out terlebih dahulu
+        if (in_array(strtoupper($data->allocation), ['MENDING', 'SPOTCLEANING'])) {
+
+            $exists = DB::table('output_defect_in_out')
+                ->where('defect_id', $id)
+                ->where('output_type', 'qc_fns_pck_return')
+                ->where('status', 'reworked')
+                ->exists();
+
+            if (!$exists) {
+                $this->emit(
+                    'showError',
+                    'Defect harus melalui proses Defect In Out terlebih dahulu sebelum dapat diproses ke Rework.'
+                );
+
+                return;
+            }
         }
 
         $this->emit('showConfirmRework', $id);
