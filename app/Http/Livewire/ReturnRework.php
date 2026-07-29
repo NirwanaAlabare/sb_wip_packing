@@ -190,7 +190,7 @@ class ReturnRework extends Component
             ->leftJoin('output_defect_types', 'output_defect_types.id', '=', 'output_defect_packing_po_return.defect_type_id')
             ->where('defect_status', 'defect')
             ->where('line_qc_finishing', auth()->user()->username)
-            ->whereDate('output_defect_packing_po_return.updated_at', $this->date)
+            // ->whereDate('output_defect_packing_po_return.updated_at', $this->date)
             ->orderBy('output_defect_packing_po_return.id', 'DESC');
 
         $queryRework = DB::table('output_defect_packing_po_return')
