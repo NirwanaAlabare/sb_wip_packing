@@ -232,17 +232,24 @@ class Defect extends Component
         $this->validateOnly('outputInput');
         $this->validateOnly('sizeInput');
 
-        $endlineOutputData = EndlineOutput::selectRaw("output_rfts.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rfts.master_plan_id")->where("id_ws", $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->count();
-        $currentRftData = Rft::selectRaw("output_rfts_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rfts_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->count();
-        $currentDefectData = DefectModel::selectRaw("output_defects_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_defects_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->where("defect_status", "defect")->count();
-        $currentRejectData = Reject::selectRaw("output_rejects_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rejects_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->count();
+        // Deprecated
+        // $endlineOutputData = EndlineOutput::selectRaw("output_rfts.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rfts.master_plan_id")->where("id_ws", $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+        // $currentRftData = Rft::selectRaw("output_rfts_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rfts_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+        // $currentDefectData = DefectModel::selectRaw("output_defects_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_defects_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->where("defect_status", "defect")->count();
+        // $currentRejectData = Reject::selectRaw("output_rejects_packing.*")->leftJoin("master_plan", "master_plan.id", "=", "output_rejects_packing.master_plan_id")->where('id_ws', $this->orderInfo->id_ws)->where("color", $this->orderInfo->color)->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+
+        $endlineOutputData = EndlineOutput::selectRaw("output_rfts.*")->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+        $currentRftData = Rft::selectRaw("output_rfts_packing.*")->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+        $currentDefectData = DefectModel::selectRaw("output_defects_packing.*")->where("so_det_id", $this->sizeInput)->where("defect_status", "defect")->whereNull("kode_numbering")->count();
+        $currentRejectData = Reject::selectRaw("output_rejects_packing.*")->where("so_det_id", $this->sizeInput)->whereNull("kode_numbering")->count();
+
         $currentOutputData = $currentRftData+$currentDefectData+$currentRejectData;
         $balanceOutputData = $endlineOutputData-$currentOutputData;
 
         $additionalMessage = $balanceOutputData < $this->outputInput && $balanceOutputData > 0 ? "<b>".($this->outputInput - $balanceOutputData)."</b> output melebihi batas input." : null;
-        // if ($balanceOutputData < $this->outputInput) {
-        //     $this->outputInput = $balanceOutputData;
-        // }
+        if ($balanceOutputData < $this->outputInput) {
+            $this->outputInput = $balanceOutputData;
+        }
 
         if ($this->outputInput > 0) {
             if ($additionalMessage) {
@@ -251,7 +258,7 @@ class Defect extends Component
 
             $this->emit('showModal', 'defect');
         } else {
-            $this->emit('alert', 'error', "Output packing-line tidak bisa melebihi endline.");
+            $this->emit('alert', 'error', "Output finish-line tidak bisa melebihi endline.");
         }
     }
 
