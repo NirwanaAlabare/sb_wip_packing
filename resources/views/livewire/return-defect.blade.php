@@ -287,14 +287,6 @@
                 $('#defect-type-select2').val("").trigger('change');
                 $('#defect-area-select2').val("").trigger('change');
             });
-
-            document.getElementById('defect-input').addEventListener("keyup", async (event) => {
-                if (event.key === 'Enter' || event.keyCode === 13) {
-                    await @this.preSubmitInput();
-                    let el = document.querySelector( ':focus' );
-                    if( el ) el.blur();
-                }
-            });
         })
     </script>
 @endpush
