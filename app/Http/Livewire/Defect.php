@@ -15,12 +15,14 @@ use App\Models\SignalBit\Rft;
 use App\Models\SignalBit\Reject;
 use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\Defect as DefectModel;
+use App\Traits\ChecksMasterPlanCancel;
 use Carbon\Carbon;
 use DB;
 
 class Defect extends Component
 {
     use WithFileUploads;
+    use ChecksMasterPlanCancel;
 
     public $orderInfo;
     public $orderWsDetailSizes;
@@ -264,6 +266,10 @@ class Defect extends Component
 
     public function submitInput(SessionManager $session)
     {
+        if ($this->masterPlanCancelled()) {
+            return;
+        }
+
         $validatedData = $this->validate();
 
         $insertData = [];
