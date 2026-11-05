@@ -15,7 +15,7 @@
         <button class="btn btn-sb-secondary-outline d-none mb-3" type="button" wire:click="preSubmitFilter" id="filter-button"><i class="fa-regular fa-filter"></i></button>
     </div>
 
-    <div class="loading-container-fullscreen hidden" id="loading-order-list">
+    <div class="loading-container-fullscreen" wire:loading wire:target="preSubmitFilter, clearFilter, filterLine, filterBuyer, filterWs, filterProductType, filterStyle">
         <div class="loading-container">
             <div class="loading"></div>
         </div>
@@ -242,15 +242,7 @@
 
 @push('scripts')
     <script>
-        Livewire.emit("loadingStart");
-
         document.addEventListener("DOMContentLoaded", () => {
-            $("#loading-order-list").addClass("hidden");
-
-            $('#filter-button').on('click', function (e) {
-                Livewire.emit("loadingStart");
-            });
-
             // Line
             $('#line-select2').select2({
                 theme: "bootstrap-5",
@@ -260,7 +252,6 @@
             });
 
             $('#line-select2').on('change', function (e) {
-                Livewire.emit("loadingStart");
                 var filterLine = $('#line-select2').select2("val");
                 @this.set('filterLine', filterLine);
             });
@@ -274,7 +265,6 @@
             });
 
             $('#buyer-select2').on('change', function (e) {
-                Livewire.emit("loadingStart");
                 var filterBuyer = $('#buyer-select2').select2("val");
                 @this.set('filterBuyer', filterBuyer);
             });
@@ -288,7 +278,6 @@
             });
 
             $('#ws-select2').on('change', function (e) {
-                Livewire.emit("loadingStart");
                 var filterWs = $('#ws-select2').select2("val");
                 @this.set('filterWs', filterWs);
             });
@@ -302,7 +291,6 @@
             });
 
             $('#product-type-select2').on('change', function (e) {
-                Livewire.emit("loadingStart");
                 var filterProductType = $('#product-type-select2').select2("val");
                 @this.set('filterProductType', filterProductType);
             });
@@ -316,7 +304,6 @@
             });
 
             $('#style-select2').on('change', function (e) {
-                Livewire.emit("loadingStart");
                 var filterStyle = $('#style-select2').select2("val");
                 @this.set('filterStyle', filterStyle);
             });
@@ -328,8 +315,6 @@
                 $('#product-type-select2').val("").trigger('change');
                 $('#style-select2').val("").trigger('change');
             });
-
-            Livewire.emit("loadingStop");
         })
     </script>
 @endpush
