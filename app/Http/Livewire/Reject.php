@@ -89,10 +89,10 @@ class Reject extends Component
         'clearInput' => 'clearInput',
     ];
 
-    public function mount(SessionManager $session, $orderWsDetailSizes)
+    public function mount($orderInfo, $orderWsDetailSizes)
     {
+        $this->orderInfo = $orderInfo;
         $this->orderWsDetailSizes = $orderWsDetailSizes;
-        $session->put('orderWsDetailSizes', $orderWsDetailSizes);
         $this->outputInput = 1;
         $this->sizeInput = null;
         $this->sizeInputText = null;
@@ -108,14 +108,17 @@ class Reject extends Component
         $this->emit('loadRejectPageJs');
     }
 
-    public function updateWsDetailSizes()
+    public function updateWsDetailSizes($orderInfoId = null, $orderWsDetailSizes = null)
     {
         $this->outputInput = 1;
         $this->sizeInput = null;
         $this->sizeInputText = '';
 
-        $this->orderInfo = session()->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = session()->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        // Ganti order hanya kalau dikirim dari panel di tab ini (ganti color)
+        if ($orderInfoId) {
+            $this->orderInfo = MasterPlan::find($orderInfoId);
+            $this->orderWsDetailSizes = collect($orderWsDetailSizes);
+        }
     }
 
     public function updateOutput()
@@ -484,8 +487,7 @@ class Reject extends Component
     {
         $this->emit('loadRejectPageJs');
 
-        $this->orderInfo = $session->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        $this->orderWsDetailSizes = collect($this->orderWsDetailSizes)->map(function ($item) { return is_array($item) ? (object) $item : $item; });
 
         // Get total output
         $this->output = collect(DB::select("select output_rejects_packing.*, so_det.size, COUNT(output_rejects_packing.id) output from `output_rejects_packing` left join `so_det` on `so_det`.`id` = `output_rejects_packing`.`so_det_id` where `master_plan_id` = '".$this->orderInfo->id."' and `status` = 'NORMAL' group by so_det.id"));

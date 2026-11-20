@@ -72,10 +72,10 @@ class Defect extends Component
         'clearInput' => 'clearInput',
     ];
 
-    public function mount(SessionManager $session, $orderWsDetailSizes)
+    public function mount($orderInfo, $orderWsDetailSizes)
     {
+        $this->orderInfo = $orderInfo;
         $this->orderWsDetailSizes = $orderWsDetailSizes;
-        $session->put('orderWsDetailSizes', $orderWsDetailSizes);
         $this->output = 0;
         $this->outputInput = 1;
         $this->sizeInput = null;
@@ -92,14 +92,17 @@ class Defect extends Component
         $this->resetErrorBag();
     }
 
-    public function updateWsDetailSizes()
+    public function updateWsDetailSizes($orderInfoId = null, $orderWsDetailSizes = null)
     {
         $this->outputInput = 1;
         $this->sizeInput = null;
         $this->sizeInputText = '';
 
-        $this->orderInfo = session()->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = session()->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        // Ganti order hanya kalau dikirim dari panel di tab ini (ganti color)
+        if ($orderInfoId) {
+            $this->orderInfo = MasterPlan::find($orderInfoId);
+            $this->orderWsDetailSizes = collect($orderWsDetailSizes);
+        }
     }
 
     public function updateOutput()
@@ -312,8 +315,7 @@ class Defect extends Component
 
     public function render(SessionManager $session)
     {
-        $this->orderInfo = $session->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        $this->orderWsDetailSizes = collect($this->orderWsDetailSizes)->map(function ($item) { return is_array($item) ? (object) $item : $item; });
 
         // Get total output
         $this->output = collect(DB::select("select output_defects_packing.*, so_det.size, COUNT(output_defects_packing.id) output from `output_defects_packing` left join `so_det` on `so_det`.`id` = `output_defects_packing`.`so_det_id` where `master_plan_id` = '".$this->orderInfo->id."' and `defect_status` = 'defect' group by so_det.id"));

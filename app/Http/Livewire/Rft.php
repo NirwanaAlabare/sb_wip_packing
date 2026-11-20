@@ -11,6 +11,7 @@ use App\Models\SignalBit\Rework;
 use App\Models\SignalBit\Reject;
 use App\Models\SignalBit\EndlineOutput;
 use App\Models\Nds\OutputPacking;
+use App\Models\SignalBit\MasterPlan;
 use App\Traits\ChecksMasterPlanCancel;
 use Carbon\Carbon;
 use DB;
@@ -43,10 +44,10 @@ class Rft extends Component
         'updateWsDetailSizes' => 'updateWsDetailSizes',
     ];
 
-    public function mount(SessionManager $session, $orderWsDetailSizes)
+    public function mount($orderInfo, $orderWsDetailSizes)
     {
+        $this->orderInfo = $orderInfo;
         $this->orderWsDetailSizes = $orderWsDetailSizes;
-        $session->put('orderWsDetailSizes', $orderWsDetailSizes);
         $this->output = 0;
         $this->outputInput = 1;
         $this->sizeInput = null;
@@ -54,14 +55,17 @@ class Rft extends Component
         $this->submitting = false;
     }
 
-    public function updateWsDetailSizes()
+    public function updateWsDetailSizes($orderInfoId = null, $orderWsDetailSizes = null)
     {
         $this->outputInput = 1;
         $this->sizeInput = null;
         $this->sizeInputText = '';
 
-        $this->orderInfo = session()->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = session()->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        // Ganti order hanya kalau dikirim dari panel di tab ini (ganti color)
+        if ($orderInfoId) {
+            $this->orderInfo = MasterPlan::find($orderInfoId);
+            $this->orderWsDetailSizes = collect($orderWsDetailSizes);
+        }
     }
 
     public function updateOutput()
@@ -180,8 +184,7 @@ class Rft extends Component
 
     public function render(SessionManager $session)
     {
-        $this->orderInfo = $session->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        $this->orderWsDetailSizes = collect($this->orderWsDetailSizes)->map(function ($item) { return is_array($item) ? (object) $item : $item; });
 
         // Get total output
         $this->output = collect(DB::select("select output_rfts_packing.*, so_det.size, COUNT(output_rfts_packing.id) output from `output_rfts_packing` left join `so_det` on `so_det`.`id` = `output_rfts_packing`.`so_det_id` where `master_plan_id` = '".$this->orderInfo->id."' and `status` = 'NORMAL' group by so_det.id"));

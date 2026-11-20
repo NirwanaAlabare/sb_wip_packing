@@ -89,10 +89,13 @@ class Rework extends Component
         // }
     // }
 
-    public function updateWsDetailSizes()
+    public function updateWsDetailSizes($orderInfoId = null, $orderWsDetailSizes = null)
     {
-        $this->orderInfo = session()->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = session()->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        // Ganti order hanya kalau dikirim dari panel di tab ini (ganti color)
+        if ($orderInfoId) {
+            $this->orderInfo = MasterPlan::find($orderInfoId);
+            $this->orderWsDetailSizes = collect($orderWsDetailSizes);
+        }
     }
 
     public function loadReworkPage()
@@ -100,10 +103,10 @@ class Rework extends Component
         $this->emit('loadReworkPageJs');
     }
 
-    public function mount(SessionManager $session, $orderWsDetailSizes)
+    public function mount($orderInfo, $orderWsDetailSizes)
     {
+        $this->orderInfo = $orderInfo;
         $this->orderWsDetailSizes = $orderWsDetailSizes;
-        $session->put('orderWsDetailSizes', $orderWsDetailSizes);
 
         $this->massSize = '';
 
@@ -383,8 +386,7 @@ class Rework extends Component
     {
         $this->emit('loadReworkPageJs');
 
-        $this->orderInfo = $session->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        $this->orderWsDetailSizes = collect($this->orderWsDetailSizes)->map(function ($item) { return is_array($item) ? (object) $item : $item; });
 
         $this->allDefectImage = MasterPlan::select('gambar')->find($this->orderInfo->id);
 

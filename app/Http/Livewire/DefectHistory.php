@@ -36,10 +36,10 @@ class DefectHistory extends Component
         'hideDefectAreaImageClear' => 'hideDefectAreaImage'
     ];
 
-    public function mount(SessionManager $session, $orderWsDetailSizes)
+    public function mount($orderInfo, $orderWsDetailSizes)
     {
+        $this->orderInfo = $orderInfo;
         $this->orderWsDetailSizes = $orderWsDetailSizes;
-        $session->put('orderWsDetailSizes', $orderWsDetailSizes);
         $this->defectPositionX = null;
         $this->defectPositionY = null;
     }
@@ -73,8 +73,7 @@ class DefectHistory extends Component
 
     public function render(SessionManager $session)
     {
-        $this->orderInfo = $session->get('orderInfo', $this->orderInfo);
-        $this->orderWsDetailSizes = $session->get('orderWsDetailSizes', $this->orderWsDetailSizes);
+        $this->orderWsDetailSizes = collect($this->orderWsDetailSizes)->map(function ($item) { return is_array($item) ? (object) $item : $item; });
         $productTypes = ProductType::get();
         $defectTypes = DefectType::get();
         $defectAreas = DefectArea::get();
